@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services.PVI", "ControlWorks.Services.PVI\ControlWorks.Services.PVI.csproj", "{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{CDFBBB4D-3A82-4833-83DB-735957283C1F}"
+	ProjectSection(SolutionItems) = preProject
+		bin\BR.AN.PviServices.dll = bin\BR.AN.PviServices.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C6B6E7B-292A-4B09-BB87-01C3CCC00DE8}
+	EndGlobalSection
+EndGlobal
