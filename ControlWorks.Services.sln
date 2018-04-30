@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{CDFBBB4D-3A8
 		bin\BR.AN.PviServices.dll = bin\BR.AN.PviServices.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "TestHarness\TestHarness.csproj", "{4D284B58-A87F-49D0-BE47-210120779AF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D284B58-A87F-49D0-BE47-210120779AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D284B58-A87F-49D0-BE47-210120779AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D284B58-A87F-49D0-BE47-210120779AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D284B58-A87F-49D0-BE47-210120779AF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

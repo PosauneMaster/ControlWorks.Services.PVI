@@ -12,11 +12,11 @@ namespace ControlWorks.Services.PVI
 {
     public class PviContext : ApplicationContext
     {
-        private PviManager _pviManager;
+        private readonly PviManager _pviManager;
 
         public Service PviService { get; set; }
 
-        private IEventNotifier _eventNotifier;
+        private readonly IEventNotifier _eventNotifier;
 
         public PviContext()
         {
