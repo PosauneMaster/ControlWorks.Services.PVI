@@ -1,9 +1,6 @@
 ﻿using BR.AN.PviServices;
-using System;
+using ControlWorks.Services.ConfigurationProvider;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ControlWorks.Services.PVI
 {
@@ -97,7 +94,7 @@ namespace ControlWorks.Services.PVI
         {
             var settings = GetSettings();
             settings.AddOrUpdate(info);
-            return settings.Save(ConfigurationProvider.CpuSettingsFile);
+            return settings.Save(AppSettings.CpuSettingsFile);
         }
 
         public bool RemoveByName(string name)
@@ -107,7 +104,7 @@ namespace ControlWorks.Services.PVI
             if (cpu != null)
             {
                 settings.Remove(cpu);
-                settings.Save(ConfigurationProvider.CpuSettingsFile);
+                settings.Save(AppSettings.CpuSettingsFile);
                 return true;
             }
             return false;
@@ -120,7 +117,7 @@ namespace ControlWorks.Services.PVI
             if (cpu != null)
             {
                 settings.Remove(cpu);
-                settings.Save(ConfigurationProvider.CpuSettingsFile);
+                settings.Save(AppSettings.CpuSettingsFile);
                 return true;
             }
             return false;
@@ -129,7 +126,7 @@ namespace ControlWorks.Services.PVI
 
         private CpuInfoCollection GetSettings()
         {
-            var settingFile = ConfigurationProvider.CpuSettingsFile;
+            var settingFile = AppSettings.CpuSettingsFile;
             var collection = new CpuInfoCollection();
             collection.Open(settingFile);
 

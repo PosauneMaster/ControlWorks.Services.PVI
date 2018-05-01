@@ -99,12 +99,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ControlWorks.Services.ConfigurationProvider\ControlWorks.Services.ConfigurationProvider.csproj">
+      <Project>{c9955c82-321f-427d-987e-c668009e3eaf}</Project>
+      <Name>ControlWorks.Services.ConfigurationProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ControlWorks.Services.Pvi\ControlWorks.Services.Pvi.csproj">
       <Project>{be7afd30-1d56-4baa-8bef-7f4de8741796}</Project>
       <Name>ControlWorks.Services.Pvi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="log4net">
+      <Version>2.0.8</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>

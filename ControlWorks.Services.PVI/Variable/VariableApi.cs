@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ControlWorks.Services.ConfigurationProvider;
 
 namespace ControlWorks.Services.PVI
 {
@@ -24,7 +25,7 @@ namespace ControlWorks.Services.PVI
             {
 
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
                 return collection.GetAll();
             }).ConfigureAwait(false);
 
@@ -45,7 +46,7 @@ namespace ControlWorks.Services.PVI
             var response = await Task.Run(() =>
             {
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
 
                 return collection.FindByCpu(name);
             }).ConfigureAwait(false);
@@ -73,7 +74,7 @@ namespace ControlWorks.Services.PVI
         public VariableDetailRespose FindByCpuName(string name)
         {
             var collection = new VariableInfoCollection();
-            collection.Open(ConfigurationProvider.VariableSettingsFile);
+            collection.Open(AppSettings.VariableSettingsFile);
             var response = collection.FindByCpu(name);
 
             if (response == null)
@@ -101,9 +102,9 @@ namespace ControlWorks.Services.PVI
             await Task.Run(() =>
             {
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
                 collection.AddCpuRange(cpus);
-                collection.Save(ConfigurationProvider.VariableSettingsFile);
+                collection.Save(AppSettings.VariableSettingsFile);
             }).ConfigureAwait(false);
 
         }
@@ -113,9 +114,9 @@ namespace ControlWorks.Services.PVI
             await Task.Run(() =>
             {
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
                 collection.RemoveCpuRange(cpus);
-                collection.Save(ConfigurationProvider.VariableSettingsFile);
+                collection.Save(AppSettings.VariableSettingsFile);
             }).ConfigureAwait(false);
         }
 
@@ -126,9 +127,9 @@ namespace ControlWorks.Services.PVI
             await Task.Run(() =>
             {
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
                 collection.AddRange(cpuName, variableNames);
-                collection.Save(ConfigurationProvider.VariableSettingsFile);
+                collection.Save(AppSettings.VariableSettingsFile);
             }).ConfigureAwait(false);
         }
 
@@ -137,9 +138,9 @@ namespace ControlWorks.Services.PVI
             await Task.Run(() =>
             {
                 var collection = new VariableInfoCollection();
-                collection.Open(ConfigurationProvider.VariableSettingsFile);
+                collection.Open(AppSettings.VariableSettingsFile);
                 collection.RemoveRange(cpuName, variableNames);
-                collection.Save(ConfigurationProvider.VariableSettingsFile);
+                collection.Save(AppSettings.VariableSettingsFile);
             }).ConfigureAwait(false);
         }
 
