@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cpu\CpuManager.cs" />
     <Compile Include="Cpu\CpuApi.cs" />
     <Compile Include="Cpu\CpuDetailResponse.cs" />
     <Compile Include="Cpu\CpuInfo.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="Pvi\PviContext.cs" />
     <Compile Include="Pvi\PviManager.cs" />
     <Compile Include="ResponseMessage.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VariableManager.cs" />
     <Compile Include="Variable\VariableApi.cs" />
     <Compile Include="Variable\VariableCollection.cs" />
     <Compile Include="Variable\VariableDetailRespose.cs" />

@@ -3,7 +3,9 @@ using log4net;
 using System;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml.Serialization;
+using ControlWorks.Services.PVI.Cpu;
 
 namespace ControlWorks.Services.PVI
 {
@@ -14,11 +16,12 @@ namespace ControlWorks.Services.PVI
 
     internal class PviManager : IPviManager, IDisposable
     {
-        private static ILog _log = LogManager.GetLogger("FileLogger");
+        private readonly ILog _log = LogManager.GetLogger("FileLogger");
 
-        private IEventNotifier _eventNotifier;
+        private readonly IEventNotifier _eventNotifier;
 
         public Service PviService { get; set; }
+        public ICpuManager CpuManager { get; set; }
 
         public PviManager() { }
         public PviManager(IEventNotifier eventNotifier)
@@ -39,15 +42,17 @@ namespace ControlWorks.Services.PVI
 
         private void PviService_Error(object sender, PviEventArgs e)
         {
-            var pviEventMsg = FormatPviEventMessage("PviService_Error", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("PviService_Error", e);
+            _eventNotifier.OnPviServiceError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
+
             _log.Info(pviEventMsg);
         }
 
         private void PviService_Disconnected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = FormatPviEventMessage("PviService_Disconnected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("PviService_Disconnected", e);
+            _eventNotifier.OnPviServiceDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
             _log.Info(pviEventMsg);
-
         }
 
         private void PviService_Connected(object sender, PviEventArgs e)
@@ -55,26 +60,31 @@ namespace ControlWorks.Services.PVI
             var service = sender as Service;
             PviService = service;
 
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Service));
-            using (var textWriter = new Utf8StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, this);
-                var result = textWriter.ToString();
 
+            var settingFile = ConfigurationProvider.AppSettings.CpuSettingsFile;
+            var collection = new CpuInfoCollection();
+            CpuManager = new CpuManager(service);
+
+            try
+            {
+                collection.Open(settingFile);
+                CpuManager = new CpuManager(PviService);
+                CpuManager.CpusLoaded += CpuManager_CpusLoaded;
+                CpuManager.LoadCpuCollection(collection.GetAll());
+            }
+            catch (System.Exception ex)
+            {
+                _log.Error("Error Loading Cpu Settings", ex);
             }
 
-
-
-
-            var pviEventMsg = FormatPviEventMessage("PviService._service_Connected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Connected", e);
             _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg, PviService = service });
             _log.Info(pviEventMsg);
         }
 
-        private string FormatPviEventMessage(string message, PviEventArgs e)
+        private void CpuManager_CpusLoaded(object sender, CpusLoadedEventArgs e)
         {
-            return String.Format("{0}; Action={1}, Address={2}, Error Code={3}, Error Text={4}, Name={5} ",
-                message, e.Action, e.Address, e.ErrorCode, e.ErrorText, e.Name);
+            throw new NotImplementedException();
         }
 
         #region IDisposable

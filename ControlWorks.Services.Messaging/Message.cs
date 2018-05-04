@@ -10,7 +10,7 @@ namespace ControlWorks.Services.Messaging
     {
         public Guid Id { get; set; }
         public Type Type { get; set; }
-        public string Action { get; set; }
+        public MessageAction Action { get; set; }
         public string Data { get; set; }
     }
 }

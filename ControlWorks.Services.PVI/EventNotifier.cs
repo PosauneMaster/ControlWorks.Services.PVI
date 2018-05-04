@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ControlWorks.Services.PVI.Cpu;
 
 namespace ControlWorks.Services.PVI
 {
@@ -52,7 +53,9 @@ namespace ControlWorks.Services.PVI
 
     public class PviApplicationEventArgs : EventArgs
     {
-        public Service PviService { get; set; }
+        public IPviManager PviManager { get; set; }
+        public ICpuManager CpuManager { get; set; }
+        public IVariableManager VariableManager { get; set; }
         public string Message { get; set; }
     }
 }

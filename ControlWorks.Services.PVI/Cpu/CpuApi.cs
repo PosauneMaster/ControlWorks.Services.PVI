@@ -1,8 +1,8 @@
-﻿using BR.AN.PviServices;
+﻿using System.Collections.Generic;
+using BR.AN.PviServices;
 using ControlWorks.Services.ConfigurationProvider;
-using System.Collections.Generic;
 
-namespace ControlWorks.Services.PVI
+namespace ControlWorks.Services.PVI.Cpu
 {
     public interface ICpuApi
     {
@@ -35,7 +35,7 @@ namespace ControlWorks.Services.PVI
             var list = new List<CpuDetailResponse>();
             var settings = GetSettings();
 
-            foreach (Cpu cpu in _collection.Values)
+            foreach (BR.AN.PviServices.Cpu cpu in _collection.Values)
             {
                 var setting = settings.FindByName(cpu.Name);
 
@@ -133,7 +133,7 @@ namespace ControlWorks.Services.PVI
             return collection;
         }
 
-        private CpuDetailResponse Map(CpuInfo setting, Cpu cpu)
+        private CpuDetailResponse Map(CpuInfo setting, BR.AN.PviServices.Cpu cpu)
         {
             var detail = new CpuDetailResponse();
             detail.Description = setting.Description;

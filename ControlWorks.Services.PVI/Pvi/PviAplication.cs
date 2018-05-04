@@ -1,10 +1,11 @@
-﻿using BR.AN.PviServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Cpu;
+using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI
 {
@@ -28,7 +29,7 @@ namespace ControlWorks.Services.PVI
             notifier.PviServiceDisconnected += _eventNotifier_PviServiceDisconnected;
             notifier.PviServiceError += _eventNotifier_PviServiceError;
 
-            _pviContext = new PviContext();
+            _pviContext = new PviContext(notifier);
             Application.Run(_pviContext);
         }
 
@@ -42,10 +43,20 @@ namespace ControlWorks.Services.PVI
             return _service.HasError;
         }
 
+        public async Task AddCpu(CpuInfo info)
+        {
+            var api = new CpuApi();
+
+            await Task.Run(() =>
+            {
+                api.Add(info);
+                //_pviContext.CpuService.CreateCpu(info.Name, info.IpAddress);
+            }).ConfigureAwait(false);
+        }
+
 
         public void Disconnect()
         {
-            _pviContext.DisconnectPvi();
             _pviContext.Dispose();
         }
 
