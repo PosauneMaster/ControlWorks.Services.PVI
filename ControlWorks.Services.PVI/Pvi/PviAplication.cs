@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BR.AN.PviServices;
-using ControlWorks.Services.PVI.Cpu;
+using ControlWorks.Services.PVI.Panel;
 using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI

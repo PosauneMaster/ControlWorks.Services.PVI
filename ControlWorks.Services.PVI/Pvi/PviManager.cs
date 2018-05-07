@@ -1,27 +1,26 @@
 ﻿using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Panel;
 using log4net;
 using System;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-using ControlWorks.Services.PVI.Cpu;
 
 namespace ControlWorks.Services.PVI
 {
-    internal interface IPviManager
+    public interface IPviManager
     {
         void ConnectPvi();
     }
 
-    internal class PviManager : IPviManager, IDisposable
+    public class PviManager : IPviManager, IDisposable
     {
         private readonly ILog _log = LogManager.GetLogger("FileLogger");
 
         private readonly IEventNotifier _eventNotifier;
 
         public Service PviService { get; set; }
-        public ICpuManager CpuManager { get; set; }
+        private ICpuManager _cpuManager;
+        private IVariableManager _variableManager;
 
         public PviManager() { }
         public PviManager(IEventNotifier eventNotifier)
@@ -63,14 +62,14 @@ namespace ControlWorks.Services.PVI
 
             var settingFile = ConfigurationProvider.AppSettings.CpuSettingsFile;
             var collection = new CpuInfoCollection();
-            CpuManager = new CpuManager(service);
 
             try
             {
+                _cpuManager = new CpuManager(PviService, _eventNotifier);
+                //_variableManager = new VariableManager();
+
                 collection.Open(settingFile);
-                CpuManager = new CpuManager(PviService);
-                CpuManager.CpusLoaded += CpuManager_CpusLoaded;
-                CpuManager.LoadCpuCollection(collection.GetAll());
+                _cpuManager.LoadCpuCollection(collection.GetAll());
             }
             catch (System.Exception ex)
             {
@@ -78,18 +77,13 @@ namespace ControlWorks.Services.PVI
             }
 
             var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Connected", e);
-            _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg, PviService = service });
+            _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
             _log.Info(pviEventMsg);
-        }
-
-        private void CpuManager_CpusLoaded(object sender, CpusLoadedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         #region IDisposable
 
-        private bool disposed = false;
+        private bool _disposed = false;
 
         public void Dispose()
         {
@@ -99,7 +93,7 @@ namespace ControlWorks.Services.PVI
 
         private void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
@@ -113,7 +107,7 @@ namespace ControlWorks.Services.PVI
                     }
                 }
             }
-            disposed = true;
+            _disposed = true;
         }
 
         #endregion

@@ -2,7 +2,7 @@
 using BR.AN.PviServices;
 using ControlWorks.Services.ConfigurationProvider;
 
-namespace ControlWorks.Services.PVI.Cpu
+namespace ControlWorks.Services.PVI.Panel
 {
     public interface ICpuApi
     {
