@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using ControlWorks.Services.ConfigurationProvider;
+using ControlWorks.Services.PVI.Variables;
 
 namespace TestHarness
 {
@@ -39,6 +40,13 @@ namespace TestHarness
             //collection.Save(filepath);
 
 
+        }
+
+        private void btnToJson_Click(object sender, EventArgs e)
+        {
+            var info = new VariableData() {CpuName = "Cpu1", IpAddress = "123.2.5.123", DataType = "Int32", VariableName = "Variable1", Value = "987654"};
+
+            var json = info.ToJson();
         }
     }
 }

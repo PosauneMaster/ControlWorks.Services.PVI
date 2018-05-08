@@ -35,6 +35,7 @@
             this.txtVariables = new System.Windows.Forms.TextBox();
             this.btnAddVariables = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.btnToJson = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -98,11 +99,22 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
+            // btnToJson
+            // 
+            this.btnToJson.Location = new System.Drawing.Point(373, 399);
+            this.btnToJson.Name = "btnToJson";
+            this.btnToJson.Size = new System.Drawing.Size(75, 23);
+            this.btnToJson.TabIndex = 7;
+            this.btnToJson.Text = "Json";
+            this.btnToJson.UseVisualStyleBackColor = true;
+            this.btnToJson.Click += new System.EventHandler(this.btnToJson_Click);
+            // 
             // frmVariables
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(524, 480);
+            this.Controls.Add(this.btnToJson);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnAddVariables);
             this.Controls.Add(this.txtVariables);
@@ -126,5 +138,6 @@
         private System.Windows.Forms.TextBox txtVariables;
         private System.Windows.Forms.Button btnAddVariables;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnToJson;
     }
 }

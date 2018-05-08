@@ -4,6 +4,7 @@ using log4net;
 using System;
 using System.IO;
 using System.Text;
+using ControlWorks.Services.PVI.Variables;
 
 namespace ControlWorks.Services.PVI
 {
@@ -63,11 +64,13 @@ namespace ControlWorks.Services.PVI
             var settingFile = ConfigurationProvider.AppSettings.CpuSettingsFile;
             var collection = new CpuInfoCollection();
 
+            _eventNotifier.CpuConnected += _eventNotifier_CpuConnected;
+            _eventNotifier.CpuDisconnected += _eventNotifier_CpuDisconnected;
+            _eventNotifier.CpuError += _eventNotifier_CpuError;
+
             try
             {
                 _cpuManager = new CpuManager(PviService, _eventNotifier);
-                //_variableManager = new VariableManager();
-
                 collection.Open(settingFile);
                 _cpuManager.LoadCpuCollection(collection.GetAll());
             }
@@ -79,6 +82,31 @@ namespace ControlWorks.Services.PVI
             var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Connected", e);
             _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
             _log.Info(pviEventMsg);
+        }
+
+        private void _eventNotifier_CpuError(object sender, PviApplicationEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _eventNotifier_CpuDisconnected(object sender, PviApplicationEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _eventNotifier_CpuConnected(object sender, PviApplicationEventArgs e)
+        {
+            if (_variableManager == null)
+            {
+                _variableManager = new VariableManager(PviService, new VariableApi(), _eventNotifier);
+            }
+
+            if (sender is Cpu cpu)
+            {
+                _variableManager.ConnectVariablesAsync(cpu);
+            }
+
+
         }
 
         #region IDisposable

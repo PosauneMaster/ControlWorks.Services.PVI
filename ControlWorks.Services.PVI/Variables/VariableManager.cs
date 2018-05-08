@@ -1,60 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BR.AN.PviServices;
-using BR.AN.PviServices.EventDescription;
 using log4net;
-using log4net.Core;
 
-namespace ControlWorks.Services.PVI
+namespace ControlWorks.Services.PVI.Variables
 {
     public interface IVariableManager
     {
-        void ConnectVariables();
+        System.Threading.Tasks.Task ConnectVariablesAsync(Cpu cpu);
         List<Tuple<string, string>> ReadVariables(string cpuName, IEnumerable<string> variables);
 
     }
-    public class VariableManager
+    public class VariableManager : IVariableManager
     {
         private readonly ILog _log = LogManager.GetLogger("FileLogger");
-        private Service _service;
-        private IVariableApi _variableApi;
-        private bool _triggerValue = false;
-        private IEventNotifier _notifier;
+        private readonly Service _service;
+        private readonly IVariableApi _variableApi;
+        private readonly IEventNotifier _eventNotifier;
 
 
         public VariableManager(Service service, IVariableApi variableApi) : this(service, variableApi, null)
         {
 
         }
-        public VariableManager(Service service, IVariableApi variableApi, IEventNotifier notifier)
+        public VariableManager(Service service, IVariableApi variableApi, IEventNotifier eventNotifier)
         {
-            _notifier = notifier;
+            _eventNotifier = eventNotifier;
             _service = service;
             _variableApi = variableApi;
-
-            bool t;
-            if (Boolean.TryParse(ConfigurationProvider.AppSettings.ShutdownTriggerVariable, out t))
-            {
-                _triggerValue = t;
-            }
         }
 
-        public void ConnectVariables()
-        {
-            foreach (Cpu cpu in _service.Cpus.Values)
-            {
-                var cpuVariables = _variableApi.FindByCpuName(cpu.Name);
-                CreateVariables(cpu, cpuVariables.VariableNames);
-            }
-        }
 
         public List<Tuple<string, string>> ReadVariables(string cpuName)
         {
-
             var variableInfo = _variableApi.FindByCpuName(cpuName);
 
             var list = new List<Tuple<string, string>>();
@@ -75,6 +54,12 @@ namespace ControlWorks.Services.PVI
             return list;
         }
 
+        public async System.Threading.Tasks.Task ConnectVariablesAsync(Cpu cpu)
+        {
+            var cpuVariables = _variableApi.FindByCpuName(cpu.Name).VariableNames;
+            await System.Threading.Tasks.Task.Run(() => CreateVariables(cpu, cpuVariables));
+        }
+
         private void CreateVariables(Cpu cpu, string[] variables)
         {
             foreach (var variableName in variables)
@@ -87,75 +72,75 @@ namespace ControlWorks.Services.PVI
             CreateEventVariable(cpu, trigger);
         }
 
-        private Variable CreateEventVariable(Cpu cpu, string name)
+        private void CreateEventVariable(Cpu cpu, string name)
         {
             if (!cpu.Variables.ContainsKey(name))
             {
-                Variable variable = new Variable(cpu, name);
-                variable.UserTag = name;
-                variable.UserData = cpu.UserData;
+                var variable = new Variable(cpu, name)
+                {
+                    UserTag = name,
+                    UserData = cpu.UserData
+                };
                 variable.Connected += Variable_Connected;
                 variable.Error += Variable_Error;
                 variable.ValueChanged += Variable_ValueChanged;
                 variable.Active = true;
                 variable.Connect();
-                return variable;
+                return;
             }
             _log.Info($"A variable with the name {name} already exists for Cpu {cpu.Name}");
-
-            return null;
         }
 
         private void Variable_ValueChanged(object sender, VariableEventArgs e)
         {
-            var variable = sender as Variable;
-
-            if (variable == null)
+            if (!(sender is Variable variable))
             {
                 return;
             }
 
-            var cpu = variable.Parent as Cpu;
-
-            if (cpu == null)
+            if (!(variable.Parent is Cpu cpu))
             {
                 return;
             }
 
-            var value = variable.Value.ToBoolean(CultureInfo.CurrentCulture);
-
-            if (value == _triggerValue && _notifier != null)
+            if (variable.Value is null)
             {
-                //_notifier.RaiseShutdown(cpu);
+                return;
             }
 
-            _log.Info($"Variable {e.Name} value changed. Value={value}; Cpu={cpu.Name}/{cpu.Connection.TcpIp.DestinationIpAddress}");
+            var data = new VariableData()
+            {
+                CpuName = cpu.Name,
+                IpAddress = cpu.Connection.TcpIp.DestinationIpAddress,
+                DataType = Enum.GetName(typeof(DataType), variable.Value.DataType),
+                VariableName = e.Name,
+                Value = variable.Value.ToString(CultureInfo.InvariantCulture)
+            };
+
+            _eventNotifier.OnVariableValueChanged(sender, new PviApplicationEventArgs() { Message = data.ToJson() });
         }
 
-        private Variable CreateVariable(Cpu cpu, string name)
+        private void CreateVariable(Cpu cpu, string name)
         {
             if (!cpu.Variables.ContainsKey(name))
             {
-                Variable variable = new Variable(cpu, name);
-                variable.UserTag = name;
-                variable.UserData = cpu.UserData;
+                var variable = new Variable(cpu, name)
+                {
+                    UserTag = name,
+                    UserData = cpu.UserData
+                };
                 variable.Connected += Variable_Connected;
                 variable.Error += Variable_Error;
                 variable.Active = true;
                 variable.Connect();
-                return variable;
+                return;
             }
             _log.Info($"A variable with the name {name} already exists for Cpu {cpu.Name}");
-
-            return null;
         }
 
         private void Variable_Error(object sender, PviEventArgs e)
         {
-            var variable = sender as Variable;
-            var cpu = variable.Parent as Cpu;
-
-            if (variable != null && cpu != null)
+            if (sender is Variable variable && variable.Parent is Cpu cpu)
             {
                 _log.Info(Utils.FormatPviEventMessage($"Variable Error Cpu={cpu.Name}; Variable={variable.Name}", e));
             }
@@ -163,13 +148,15 @@ namespace ControlWorks.Services.PVI
 
         private void Variable_Connected(object sender, PviEventArgs e)
         {
-            var variable = sender as Variable;
-            var cpu = variable.Parent as Cpu;
-
-            if (variable != null && cpu != null)
+            if (sender is Variable variable && variable.Parent is Cpu cpu)
             {
                 _log.Info(Utils.FormatPviEventMessage($"Variable Connected. Cpu={cpu.Name}; Variable={variable.Name}", e));
             }
+        }
+
+        public List<Tuple<string, string>> ReadVariables(string cpuName, IEnumerable<string> variables)
+        {
+            throw new NotImplementedException();
         }
     }
 }
