@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using BR.AN.PviServices;
 using ControlWorks.Services.PVI.Panel;
+using ControlWorks.Services.PVI.Variables;
 using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI.Pvi
@@ -16,7 +17,9 @@ namespace ControlWorks.Services.PVI.Pvi
     {
         private PviContext _pviContext;
         private Service _service;
-
+        private IPviManager _pviManager;
+        private ICpuManager _cpuManager;
+        private IVariableManager _variableManager;
 
         public void Connect()
         {

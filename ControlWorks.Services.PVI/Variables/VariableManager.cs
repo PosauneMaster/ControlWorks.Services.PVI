@@ -20,17 +20,12 @@ namespace ControlWorks.Services.PVI.Variables
         private readonly IEventNotifier _eventNotifier;
 
 
-        public VariableManager(Service service, IVariableApi variableApi) : this(service, variableApi, null)
-        {
-
-        }
         public VariableManager(Service service, IVariableApi variableApi, IEventNotifier eventNotifier)
         {
             _eventNotifier = eventNotifier;
             _service = service;
             _variableApi = variableApi;
         }
-
 
         public List<Tuple<string, string>> ReadVariables(string cpuName)
         {

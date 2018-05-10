@@ -105,9 +105,8 @@ namespace ControlWorks.Services.PVI
             {
                 _variableManager.ConnectVariablesAsync(cpu);
             }
-
-
         }
+
 
         #region IDisposable
 

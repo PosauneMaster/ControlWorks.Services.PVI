@@ -45,6 +45,10 @@ namespace ControlWorks.Services.PVI
         public event EventHandler<PviApplicationEventArgs> VariableError;
         public event EventHandler<PviApplicationEventArgs> VariableValueChanged;
 
+        public event EventHandler<EventArgs> PviManagerInitialized;
+        public event EventHandler<EventArgs> CpuManangerInitialized;
+        public event EventHandler<EventArgs> VariableManagerInitialized;
+
 
         public void OnPviServiceConnected(object sender, PviApplicationEventArgs e)
         {
@@ -92,6 +96,23 @@ namespace ControlWorks.Services.PVI
         public void OnVariableValueChanged(object sender, PviApplicationEventArgs e)
         {
             var temp = VariableValueChanged;
+            temp?.Invoke(sender, e);
+        }
+
+        public void OnPviManagerInitialized(object sender, EventArgs e)
+        {
+            var temp = PviManagerInitialized;
+            temp?.Invoke(sender, e);
+        }
+
+        public void OnCpuManangerInitialized(object sender, EventArgs e)
+        {
+            var temp = CpuManangerInitialized;
+            temp?.Invoke(sender, e);
+        }
+        public void OnVariableManagerInitialized(object sender, EventArgs e)
+        {
+            var temp = VariableManagerInitialized;
             temp?.Invoke(sender, e);
         }
     }

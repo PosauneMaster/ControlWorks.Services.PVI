@@ -25,6 +25,12 @@ namespace ControlWorks.Services.PVI.Panel
 
         public event EventHandler<CpusLoadedEventArgs> CpusLoaded;
 
+        public CpuManager(IEventNotifier eventNotifier)
+        {
+            _eventNotifier = eventNotifier;
+        }
+
+
         public CpuManager(Service service, IEventNotifier eventNotifier)
         {
             _service = service;

@@ -61,6 +61,7 @@
     <Compile Include="Pvi\PviContext.cs" />
     <Compile Include="Pvi\PviManager.cs" />
     <Compile Include="ResponseMessage.cs" />
+    <Compile Include="ServiceWrapper.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Variables\VariableData.cs" />
     <Compile Include="Variables\VariableManager.cs" />
