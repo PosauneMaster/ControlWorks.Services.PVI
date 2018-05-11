@@ -119,9 +119,6 @@ namespace ControlWorks.Services.PVI
 
     public class PviApplicationEventArgs : EventArgs
     {
-        public IPviManager PviManager { get; set; }
-        public ICpuManager CpuManager { get; set; }
-        public IVariableManager VariableManager { get; set; }
         public string Message { get; set; }
     }
 }

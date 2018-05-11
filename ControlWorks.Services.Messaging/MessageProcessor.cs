@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ControlWorks.Services.PVI;
+using ControlWorks.Services.PVI.Panel;
 using Newtonsoft.Json;
 
 namespace ControlWorks.Services.Messaging

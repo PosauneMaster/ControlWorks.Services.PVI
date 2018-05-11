@@ -48,12 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileWrapper.cs" />
+    <Compile Include="Panel\CpuInfo.cs" />
     <Compile Include="Panel\CpuManager.cs" />
     <Compile Include="Panel\CpuApi.cs" />
     <Compile Include="Panel\CpuDetailResponse.cs" />
-    <Compile Include="Panel\CpuInfo.cs" />
+    <Compile Include="Panel\CpuInfoService.cs" />
     <Compile Include="EventNotifier.cs" />
-    <Compile Include="FileAccess.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

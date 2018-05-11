@@ -15,9 +15,11 @@ namespace ControlWorks.Services.PVI
     {
         public static readonly object SyncLock = new object();
 
-        const string VariableMaster = "VARIABLE_MASTER";
+        private const string VariableMaster = "VARIABLE_MASTER";
 
-        readonly Dictionary<string, VariableInfo> _variableLookup;
+        private readonly Dictionary<string, VariableInfo> _variableLookup;
+        private readonly IFileWrapper _fileWrapper;
+
 
         public VariableInfoCollection()
         {
@@ -166,7 +168,7 @@ namespace ControlWorks.Services.PVI
             {
                 if (File.Exists(filepath))
                 {
-                    var json = FileAccess.Read(filepath);
+                    var json = _fileWrapper.Read(filepath);
                     var list = JsonConvert.DeserializeObject<List<VariableInfo>>(json);
                     _variableLookup.Clear();
 
@@ -196,7 +198,7 @@ namespace ControlWorks.Services.PVI
 
                 string json = JsonConvert.SerializeObject(new List<VariableInfo>(_variableLookup.Values));
 
-                FileAccess.Write(fi.FullName, json);
+                _fileWrapper.Write(fi.FullName, json);
             }
         }
     }

@@ -124,10 +124,10 @@ namespace ControlWorks.Services.PVI.Panel
         }
 
 
-        private CpuInfoCollection GetSettings()
+        private CpuInfoService GetSettings()
         {
             var settingFile = AppSettings.CpuSettingsFile;
-            var collection = new CpuInfoCollection();
+            var collection = new CpuInfoService(new FileWrapper());
             collection.Open(settingFile);
 
             return collection;

@@ -7,10 +7,9 @@ namespace ControlWorks.Services.PVI.Pvi
     {
         public Service PviService { get; set; }
 
-        public PviContext(IEventNotifier eventNotifier)
+        public PviContext(IServiceWrapper serviceWrapper)
         {
-            var pviManager = new PviManager(eventNotifier);
-            pviManager.ConnectPvi();
+            serviceWrapper.ConnectPviService();
         }
     }
 }

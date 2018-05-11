@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using ControlWorks.Services.ConfigurationProvider;
+using ControlWorks.Services.PVI.Panel;
 using Newtonsoft.Json;
 
 namespace TestHarness
@@ -9,7 +10,7 @@ namespace TestHarness
     public partial class Form1 : Form
     {
 
-        CpuInfoCollection _collection;
+        CpuInfoService _collection;
 
         public Form1()
         {
@@ -34,7 +35,7 @@ namespace TestHarness
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _collection = new CpuInfoCollection();
+            _collection = new CpuInfoService(new FileWrapper());
         }
 
         private void button2_Click(object sender, EventArgs e)

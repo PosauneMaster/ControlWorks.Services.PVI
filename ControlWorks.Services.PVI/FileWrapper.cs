@@ -8,13 +8,25 @@ using System.Threading.Tasks;
 
 namespace ControlWorks.Services.PVI
 {
-    public static class FileAccess
+    public interface IFileWrapper
     {
-        private static object _syncLock = new object();
+        bool Exists(string filename);
+        string Read(string filepath);
+        void Write(string filepath, string contents);
+    }
 
-        private static AutoResetEvent _waitHandle = new AutoResetEvent(false);
+    public class FileWrapper : IFileWrapper
+    {
+        private readonly object _syncLock = new object();
+        private readonly AutoResetEvent _waitHandle = new AutoResetEvent(false);
 
-        public static string Read(string filepath)
+
+        public bool Exists(string filename)
+        {
+            return File.Exists(filename);
+        }
+
+        public string Read(string filepath)
         {
             _waitHandle.WaitOne(1000);
             string json = null;
@@ -31,12 +43,18 @@ namespace ControlWorks.Services.PVI
             return json;
         }
 
-        public static void Write(string filepath, string contents)
+        public void Write(string filepath, string contents)
         {
             _waitHandle.WaitOne(1000);
 
             lock (_syncLock)
             {
+                var fi = new FileInfo(filepath);
+                if (!Directory.Exists(fi.DirectoryName) && !String.IsNullOrEmpty(fi.DirectoryName))
+                {
+                    Directory.CreateDirectory(fi.DirectoryName);
+                }
+
                 using (var writer = new StreamWriter(filepath, false))
                 {
                     writer.WriteLine(contents);

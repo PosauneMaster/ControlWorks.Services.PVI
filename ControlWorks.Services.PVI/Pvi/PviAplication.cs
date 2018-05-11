@@ -2,6 +2,7 @@
 using BR.AN.PviServices;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
+using log4net;
 using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI.Pvi
@@ -15,21 +16,87 @@ namespace ControlWorks.Services.PVI.Pvi
     }
     public class PviAplication
     {
+        private readonly ILog _log = LogManager.GetLogger("FileLogger");
+
         private PviContext _pviContext;
         private Service _service;
-        private IPviManager _pviManager;
         private ICpuManager _cpuManager;
         private IVariableManager _variableManager;
 
+        private readonly IEventNotifier _eventNotifier;
+        private readonly IServiceWrapper _serviceWrapper;
+
+        public PviAplication()
+        {
+            _eventNotifier = new EventNotifier();
+            _serviceWrapper = new ServiceWrapper(_eventNotifier);
+        }
+
+
         public void Connect()
         {
-            var notifier = new EventNotifier();
-            notifier.PviServiceConnected += _eventNotifier_PviServiceConnected;
-            notifier.PviServiceDisconnected += _eventNotifier_PviServiceDisconnected;
-            notifier.PviServiceError += _eventNotifier_PviServiceError;
+            _eventNotifier.PviServiceConnected += _eventNotifier_PviServiceConnected;
+            _eventNotifier.PviServiceDisconnected += _eventNotifier_PviServiceDisconnected;
+            _eventNotifier.PviServiceError += _eventNotifier_PviServiceError;
+            _eventNotifier.CpuConnected += _eventNotifier_CpuConnected;
+            _eventNotifier.CpuDisconnected += _eventNotifier_CpuDisconnected;
+            _eventNotifier.CpuError += _eventNotifier_CpuError;
+            _eventNotifier.VariableConnected += _eventNotifier_VariableConnected;
+            _eventNotifier.VariableError += _eventNotifier_VariableError;
+            _eventNotifier.VariableValueChanged += _eventNotifier_VariableValueChanged;
 
-            _pviContext = new PviContext(notifier);
+            _pviContext = new PviContext(_serviceWrapper);
             Application.Run(_pviContext);
+        }
+
+        private void CreateCpus()
+        {
+
+        }
+
+
+        private void _eventNotifier_PviServiceError(object sender, PviApplicationEventArgs e)
+        {
+        }
+
+        private void _eventNotifier_PviServiceDisconnected(object sender, PviApplicationEventArgs e)
+        {
+        }
+
+        private void _eventNotifier_PviServiceConnected(object sender, PviApplicationEventArgs e)
+        {
+            _log.Info(e.Message);
+            CreateCpus();
+        }
+
+        private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void _eventNotifier_VariableError(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void _eventNotifier_VariableConnected(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void _eventNotifier_CpuError(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void _eventNotifier_CpuDisconnected(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void _eventNotifier_CpuConnected(object sender, PviApplicationEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         public bool IsConnected()
@@ -59,18 +126,6 @@ namespace ControlWorks.Services.PVI.Pvi
             _pviContext.Dispose();
         }
 
-        private void _eventNotifier_PviServiceError(object sender, PviApplicationEventArgs e)
-        {
-        }
-
-        private void _eventNotifier_PviServiceDisconnected(object sender, PviApplicationEventArgs e)
-        {
-        }
-
-        private void _eventNotifier_PviServiceConnected(object sender, PviApplicationEventArgs e)
-        {
-            _service = sender as Service;
-        }
 
     }
 }

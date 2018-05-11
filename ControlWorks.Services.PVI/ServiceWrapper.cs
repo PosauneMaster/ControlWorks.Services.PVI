@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 using BR.AN.PviServices;
 using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Panel;
+using ControlWorks.Services.PVI.Variables;
+using Microsoft.SqlServer.Server;
 
 namespace ControlWorks.Services.PVI
 {
     public interface IServiceWrapper
     {
-        IPviManager PviManager { get; }
-
-        void ConnectPviService(IEventNotifier eventNotifier);
+        void ConnectPviService();
         void CreateCpu(CpuInfo cpuInfo);
         void DisconnectCpu(string name);
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
@@ -24,27 +25,22 @@ namespace ControlWorks.Services.PVI
     public class ServiceWrapper : IServiceWrapper
     {
         private Service _service;
-        private IEventNotifier _eventNotifier;
+        private readonly IEventNotifier _eventNotifier;
         private AutoResetEvent _disconnectWaitHandle;
-        private IPviManager _pviManager;
 
-        public IPviManager PviManager => _pviManager;
-
-        public ServiceWrapper()
+        public ServiceWrapper(IEventNotifier eventNotifier)
         {
-
+            _eventNotifier = eventNotifier;
         }
 
-        public void ConnectPviService(IEventNotifier eventNotifier)
+        public void ConnectPviService()
         {
             _service = new Service(Guid.NewGuid().ToString());
-            _eventNotifier = eventNotifier;
 
             _service.Connected += _service_Connected;
             _service.Disconnected += _service_Disconnected;
             _service.Error += _service_Error;
 
-            _pviManager = new PviManager(eventNotifier);
         }
 
         public void CreateCpu(CpuInfo cpuInfo)
@@ -127,17 +123,43 @@ namespace ControlWorks.Services.PVI
 
         private void Variable_ValueChanged(object sender, VariableEventArgs e)
         {
-            throw new NotImplementedException();
+            if (!(sender is Variable variable))
+            {
+                return;
+            }
+
+            if (!(variable.Parent is Cpu cpu))
+            {
+                return;
+            }
+
+            if (variable.Value is null)
+            {
+                return;
+            }
+
+            var data = new VariableData()
+            {
+                CpuName = cpu.Name,
+                IpAddress = cpu.Connection.TcpIp.DestinationIpAddress,
+                DataType = Enum.GetName(typeof(DataType), variable.Value.DataType),
+                VariableName = e.Name,
+                Value = variable.Value.ToString(CultureInfo.InvariantCulture)
+            };
+
+            _eventNotifier.OnVariableValueChanged(sender, new PviApplicationEventArgs() { Message = data.ToJson() });
         }
 
         private void Variable_Error(object sender, PviEventArgs e)
         {
-            throw new NotImplementedException();
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Variable_Error", e);
+            _eventNotifier.OnVariableError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Variable_Connected(object sender, PviEventArgs e)
         {
-            throw new NotImplementedException();
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Variable_Connected", e);
+            _eventNotifier.OnVariableConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Cpu_Disconnected(object sender, PviEventArgs e)
@@ -150,37 +172,43 @@ namespace ControlWorks.Services.PVI
                 }
             }
 
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService.Cpu_Disconnected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Disconnected", e);
             _eventNotifier.OnCpuDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Cpu_Error(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService.Cpu_Error", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Error", e);
             _eventNotifier.OnCpuError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Cpu_Connected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService.Cpu_Connected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Connected", e);
             _eventNotifier.OnCpuConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void _service_Error(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Error", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper._service_Error", e);
             _eventNotifier.OnPviServiceError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void _service_Disconnected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Disconnected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper._service_Disconnected", e);
             _eventNotifier.OnPviServiceDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void _service_Connected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("PviService._service_Connected", e);
+            string serviceName = String.Empty;
+            if (sender is Service service)
+            {
+                serviceName = service.FullName;
+            }
+
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper._service_Connected; ServiceName={serviceName}", e);
             _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
     }
