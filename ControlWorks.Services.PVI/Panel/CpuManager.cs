@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ControlWorks.Services.PVI.Panel
 {
@@ -12,120 +13,43 @@ namespace ControlWorks.Services.PVI.Panel
 
     public class CpuManager : ICpuManager
     {
-        private IServiceWrapper _serviceWrapper;
-        private AutoResetEvent _disconnectWaitHandle;
+        private readonly IServiceWrapper _serviceWrapper;
+        private readonly ICpuInfoService _cpuInfoService;
 
-        public event EventHandler<CpusLoadedEventArgs> CpusLoaded;
-
-
-        public CpuManager(IServiceWrapper serviceWrapper, ICpuInfoService cpuInfoCollection)
+        public CpuManager(IServiceWrapper serviceWrapper, ICpuInfoService cpuInfoService, IFileWrapper fileWrapper)
         {
             _serviceWrapper = serviceWrapper;
+            _cpuInfoService = cpuInfoService;
+        }
+
+        public void CreateCpu(CpuInfo cpuInfo)
+        {
+            _serviceWrapper.CreateCpu(cpuInfo);
         }
 
         public void LoadCpus()
         {
             var settingFile = ConfigurationProvider.AppSettings.CpuSettingsFile;
-            var collection = new CpuInfoService(new FileWrapper());
-            collection.Open(settingFile);
-            var list = collection.GetAll();
+            _cpuInfoService.Open(settingFile);
+            var list = _cpuInfoService.GetAll();
 
+            foreach (var cpuInfo in list)
+            {
+                CreateCpu(cpuInfo);
+            }
+        }
 
+        public void DisconnectCpu(string name)
+        {
+            _serviceWrapper.DisconnectCpu(name);
+        }
+
+        public Task<CpuDetailResponse> GetCpuByName(string name)
+        {
+
+            return await Task.Run(() => _cpuInfoService.FindByName(name));
         }
 
 
-
-
-        //public void CreateCpu(CpuInfo info)
-        //{
-        //    _log.Info($"Creating Cpu. Name={info.Name}; IpAddress={info.IpAddress}; Description={info.Description}");
-
-        //    Cpu cpu = null;
-        //    if (_service.Cpus.ContainsKey(info.Name))
-        //    {
-
-        //        _log.Info($"A Cpu with the name {info.Name} already exists. Disconnecting and updating");
-        //        cpu = _service.Cpus[info.Name];
-        //        DisconnectCpu(info.Name);
-        //    }
-        //    else
-        //    {
-        //        cpu = new Cpu(_service, info.Name);
-        //    }
-
-        //    cpu.Connection.DeviceType = DeviceType.TcpIp;
-        //    cpu.Connection.TcpIp.SourceStation = _sourceStationId;
-        //    cpu.Connection.TcpIp.DestinationIpAddress = info.IpAddress;
-
-        //    cpu.Connected += Cpu_Connected;
-        //    cpu.Error += Cpu_Error;
-        //    cpu.Disconnected += Cpu_Disconnected;
-
-        //    cpu.Connect();
-        //}
-
-        //private void Cpu_Disconnected(object sender, PviEventArgs e)
-        //{
-        //    if (sender is Cpu cpu)
-        //    {
-        //        cpu.Connected -= Cpu_Connected;
-        //        cpu.Error -= Cpu_Error;
-        //        cpu.Disconnected -= Cpu_Disconnected;
-        //    }
-
-        //    _eventNotifier.OnCpuDisconnected(sender, new PviApplicationEventArgs() {Message = Utils.FormatPviEventMessage($"Cpu_Disconnected", e)});
-        //}
-
-        //private void Cpu_Error(object sender, PviEventArgs e)
-        //{
-        //    _eventNotifier.OnCpuError(sender, new PviApplicationEventArgs() { Message = Utils.FormatPviEventMessage($"Cpu_Error", e) });
-        //}
-
-        //private void Cpu_Connected(object sender, PviEventArgs e)
-        //{
-        //    _eventNotifier.OnCpuConnected(sender, new PviApplicationEventArgs() { Message = Utils.FormatPviEventMessage($"Cpu_Connected", e) });
-        //}
-
-        //public void DisconnectCpu(string name)
-        //{
-        //    if (_service.Cpus.ContainsKey(name))
-        //    {
-
-        //        _log.Info($"CpuManager.DisconnectCpu Name={name}");
-
-        //        Cpu cpu = _service.Cpus[name];
-
-        //        if (cpu.IsConnected)
-        //        {
-        //            _disconnectWaitHandle = new AutoResetEvent(false);
-
-        //            cpu.Disconnect();
-
-        //            _disconnectWaitHandle.WaitOne(1000);
-        //            _disconnectWaitHandle.Dispose();
-        //            _disconnectWaitHandle = null;
-        //        } 
-
-        //        _service.Cpus.Remove(cpu.Name);
-        //    }
-        //    else
-        //    {
-        //        _log.Info($"CpuManager.DisconnectCpu Name={name} Not found");
-        //    }
-        //}
-
-
-        //public void LoadCpuCollection(IList<CpuInfo> cpuCollection)
-        //{
-        //    foreach (var cpu in cpuCollection)
-        //    {
-        //        CreateCpu(cpu);
-        //    }
-        //}
-    }
-
-    public class CpusLoadedEventArgs : EventArgs
-    {
-        public List<string> Cpus { get; set; }
     }
 }
