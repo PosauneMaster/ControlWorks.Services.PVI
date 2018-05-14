@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="FileWrapper.cs" />
     <Compile Include="Impl\CpuWrapper.cs" />
+    <Compile Include="Impl\VariableWrapper.cs" />
     <Compile Include="Panel\CpuInfo.cs" />
     <Compile Include="Panel\CpuInfoCollection.cs" />
     <Compile Include="Panel\CpuManager.cs" />

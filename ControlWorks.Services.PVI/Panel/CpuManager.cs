@@ -34,9 +34,8 @@ namespace ControlWorks.Services.PVI.Panel
 
         public void LoadCpus()
         {
-            GetCpuSettings()
-                .GetCpuList()
-                .ForEach(Add);
+            var list = GetCpuSettings().GetCpuList();
+            _cpuWrapper.Initialize(list);
 
         }
         public void DisconnectCpuByName(string name)
@@ -77,7 +76,6 @@ namespace ControlWorks.Services.PVI.Panel
 
             _cpuWrapper.CreateCpu(info);
         }
-
 
         #endregion
 

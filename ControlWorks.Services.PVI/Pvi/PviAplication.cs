@@ -57,8 +57,16 @@ namespace ControlWorks.Services.PVI.Pvi
             _eventNotifier.VariableError += _eventNotifier_VariableError;
             _eventNotifier.VariableValueChanged += _eventNotifier_VariableValueChanged;
 
+            _eventNotifier.CpuManangerInitialized += _eventNotifier_CpuManangerInitialized;
+
+
             _pviContext = new PviContext(_serviceWrapper);
             Application.Run(_pviContext);
+        }
+
+        private void _eventNotifier_CpuManangerInitialized(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void Disconnect()
@@ -104,8 +112,19 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_PviServiceConnected(object sender, PviApplicationEventArgs e)
         {
+            _cpuManager = e.CpuManager;
+            _variableManager = e.VariableManager;
+
             _log.Info(e.Message);
-            _cpuManager.LoadCpus();
+
+            if (_cpuManager == null)
+            {
+                _log.Error($"_eventNotifier_PviServiceConnected CpuManager is null");
+            }
+            else
+            {
+                _cpuManager.LoadCpus();
+            }
         }
 
         private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)

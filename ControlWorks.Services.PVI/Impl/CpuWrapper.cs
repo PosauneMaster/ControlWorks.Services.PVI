@@ -13,17 +13,18 @@ namespace ControlWorks.Services.PVI.Impl
 
     public interface ICpuWrapper
     {
+        void Initialize(IEnumerable<CpuInfo> cpuList);
         void CreateCpu(CpuInfo cpuInfo);
         void DisconnectCpu(CpuInfo info);
         CpuDetailResponse GetCpuByName(CpuInfo info);
         List<CpuDetailResponse> GetAllCpus(IEnumerable<CpuInfo> cpuInfo);
-
     }
 
     public class CpuWrapper : ICpuWrapper
     {
         private readonly Service _service;
         private readonly IEventNotifier _eventNotifier;
+        private int _initialCount;
 
         private AutoResetEvent _disconnectWaitHandle;
 
@@ -31,6 +32,17 @@ namespace ControlWorks.Services.PVI.Impl
         {
             _service = service;
             _eventNotifier = eventNotifier;
+        }
+
+        public void Initialize(IEnumerable<CpuInfo> cpuList)
+        {
+            var list = new List<CpuInfo>(cpuList);
+            _initialCount = list.Count;
+
+            foreach (var cpuInfo in list)
+            {
+                CreateCpu(cpuInfo);
+            }
         }
 
         public void CreateCpu(CpuInfo cpuInfo)
@@ -99,6 +111,11 @@ namespace ControlWorks.Services.PVI.Impl
         {
             var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Connected", e);
             _eventNotifier.OnCpuConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
+
+            if (_service.Cpus.Count == _initialCount)
+            {
+                _eventNotifier.OnCpuManangerInitialized(this, new EventArgs());
+            }
         }
 
         public List<CpuDetailResponse> GetAllCpus(IEnumerable<CpuInfo> cpuInfo)

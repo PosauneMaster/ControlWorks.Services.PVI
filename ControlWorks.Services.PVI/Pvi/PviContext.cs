@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Impl;
 
 namespace ControlWorks.Services.PVI.Pvi
 {

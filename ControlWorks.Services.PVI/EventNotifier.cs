@@ -22,6 +22,11 @@ namespace ControlWorks.Services.PVI
         event EventHandler<PviApplicationEventArgs> VariableError;
         event EventHandler<PviApplicationEventArgs> VariableValueChanged;
 
+        event EventHandler<EventArgs> PviManagerInitialized;
+        event EventHandler<EventArgs> CpuManangerInitialized;
+        event EventHandler<EventArgs> VariableManagerInitialized;
+
+
         void OnPviServiceConnected(object sender, PviApplicationEventArgs e);
         void OnPviServiceDisconnected(object sender, PviApplicationEventArgs e);
         void OnPviServiceError(object sender, PviApplicationEventArgs e);
@@ -31,7 +36,9 @@ namespace ControlWorks.Services.PVI
         void OnVariableConnected(object sender, PviApplicationEventArgs e);
         void OnVariableError(object sender, PviApplicationEventArgs e);
         void OnVariableValueChanged(object sender, PviApplicationEventArgs e);
-
+        void OnPviManagerInitialized(object sender, EventArgs e);
+        void OnCpuManangerInitialized(object sender, EventArgs e);
+        void OnVariableManagerInitialized(object sender, EventArgs e);
 
     }
     public class EventNotifier : IEventNotifier
@@ -120,8 +127,12 @@ namespace ControlWorks.Services.PVI
 
     public class PviApplicationEventArgs : EventArgs
     {
+        public IPviManager PviManager { get; set; }
+        public ICpuManager CpuManager { get; set; }
+        public IVariableManager VariableManager { get; set; }
         public IServiceWrapper ServiceWrapper { get; set; }
         public ICpuWrapper CpuWrapper { get; set; }
+        public IVariableWrapper VariableWrapper { get; set; }
         public string Message { get; set; }
     }
 }
