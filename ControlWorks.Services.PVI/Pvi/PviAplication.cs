@@ -94,11 +94,6 @@ namespace ControlWorks.Services.PVI.Pvi
         #endregion
 
 
-
-
-
-
-
         private void _eventNotifier_PviServiceError(object sender, PviApplicationEventArgs e)
         {
         }
