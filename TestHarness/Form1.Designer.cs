@@ -51,6 +51,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtRemoveName = new System.Windows.Forms.TextBox();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -247,11 +248,22 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(295, 639);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 22;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1236, 749);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.txtRemoveName);
             this.Controls.Add(this.label7);
@@ -307,6 +319,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtRemoveName;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button button4;
     }
 }
 

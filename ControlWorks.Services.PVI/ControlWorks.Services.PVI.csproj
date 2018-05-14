@@ -49,7 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileWrapper.cs" />
+    <Compile Include="Impl\CpuWrapper.cs" />
     <Compile Include="Panel\CpuInfo.cs" />
+    <Compile Include="Panel\CpuInfoCollection.cs" />
     <Compile Include="Panel\CpuManager.cs" />
     <Compile Include="Panel\CpuApi.cs" />
     <Compile Include="Panel\CpuDetailResponse.cs" />
@@ -62,7 +64,7 @@
     <Compile Include="Pvi\PviContext.cs" />
     <Compile Include="Pvi\PviManager.cs" />
     <Compile Include="ResponseMessage.cs" />
-    <Compile Include="ServiceWrapper.cs" />
+    <Compile Include="Impl\ServiceWrapper.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Variables\VariableData.cs" />
     <Compile Include="Variables\VariableManager.cs" />
@@ -93,5 +95,6 @@
       <Name>ControlWorks.Services.ConfigurationProvider</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

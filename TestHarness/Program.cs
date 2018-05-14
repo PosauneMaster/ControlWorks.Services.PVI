@@ -15,11 +15,10 @@ namespace TestHarness
         [STAThread]
         static void Main()
         {
-            byte id = AppSettings.SourceStationId;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmVariables());
+            Application.Run(new Form1());
         }
     }
 }

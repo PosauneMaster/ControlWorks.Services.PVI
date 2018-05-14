@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 
@@ -119,6 +120,8 @@ namespace ControlWorks.Services.PVI
 
     public class PviApplicationEventArgs : EventArgs
     {
+        public IServiceWrapper ServiceWrapper { get; set; }
+        public ICpuWrapper CpuWrapper { get; set; }
         public string Message { get; set; }
     }
 }

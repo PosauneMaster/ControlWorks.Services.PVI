@@ -1,5 +1,6 @@
 ﻿using ControlWorks.Services.PVI;
 using System;
+using System.Dynamic;
 using System.Windows.Forms;
 using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Panel;
@@ -102,5 +103,17 @@ namespace TestHarness
                 _collection.Remove(cpu);
             }
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            dynamic sampleObject = new ExpandoObject();
+            sampleObject.IsConnected = true;
+
+            var json = JsonConvert.SerializeObject(sampleObject);
+
+            Console.WriteLine(json);
+
+        }
     }
+
 }

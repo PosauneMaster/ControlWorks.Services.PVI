@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
 using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
@@ -10,21 +12,30 @@ namespace ControlWorks.Services.PVI.Pvi
     public interface IPviAplication
     {
         void Connect();
-        bool IsConnected();
-        bool HasError();
+        void Disconnect();
+        bool IsConnected { get; }
+        bool HasError { get; }
+        Task AddCpu(CpuInfo info);
+        Task UpdateCpu(CpuInfo info);
+        Task<CpuDetailResponse> GetCpuByName(string name);
+        Task DeleteCpuByName(string name);
+        Task DeleteCpuByIp(string ip);
+
 
     }
-    public class PviAplication
+    public class PviAplication : IPviAplication
     {
         private readonly ILog _log = LogManager.GetLogger("FileLogger");
 
         private PviContext _pviContext;
-        private Service _service;
         private ICpuManager _cpuManager;
         private IVariableManager _variableManager;
 
         private readonly IEventNotifier _eventNotifier;
         private readonly IServiceWrapper _serviceWrapper;
+
+        public bool IsConnected => _serviceWrapper.IsConnected;
+        public bool HasError => _serviceWrapper.HasError;
 
         public PviAplication()
         {
@@ -32,6 +43,7 @@ namespace ControlWorks.Services.PVI.Pvi
             _serviceWrapper = new ServiceWrapper(_eventNotifier);
         }
 
+        #region public interface
 
         public void Connect()
         {
@@ -49,10 +61,42 @@ namespace ControlWorks.Services.PVI.Pvi
             Application.Run(_pviContext);
         }
 
-        private void CreateCpus()
+        public void Disconnect()
         {
-
+            _pviContext.Dispose();
         }
+
+        public async Task AddCpu(CpuInfo info)
+        {
+            await Task.Run(() => _cpuManager.Add(info));
+        }
+
+        public async Task UpdateCpu(CpuInfo info)
+        {
+            await Task.Run(() => _cpuManager.Update(info));
+        }
+
+        public async Task<CpuDetailResponse> GetCpuByName(string name)
+        {
+            return await Task.Run(() => _cpuManager.FindCpuByName(name));
+        }
+
+        public async Task DeleteCpuByName(string name)
+        {
+            await Task.Run(() => _cpuManager.DisconnectCpuByName(name));
+        }
+
+        public async  Task DeleteCpuByIp(string ip)
+        {
+            await Task.Run(() => _cpuManager.DisconnectCpuByIp(ip));
+        }
+
+        #endregion
+
+
+
+
+
 
 
         private void _eventNotifier_PviServiceError(object sender, PviApplicationEventArgs e)
@@ -66,7 +110,7 @@ namespace ControlWorks.Services.PVI.Pvi
         private void _eventNotifier_PviServiceConnected(object sender, PviApplicationEventArgs e)
         {
             _log.Info(e.Message);
-            CreateCpus();
+            _cpuManager.LoadCpus();
         }
 
         private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)
@@ -98,34 +142,6 @@ namespace ControlWorks.Services.PVI.Pvi
         {
             throw new System.NotImplementedException();
         }
-
-        public bool IsConnected()
-        {
-            return _service.IsConnected;
-        }
-
-        public bool HasError()
-        {
-            return _service.HasError;
-        }
-
-        public async Task AddCpu(CpuInfo info)
-        {
-            var api = new CpuApi();
-
-            await Task.Run(() =>
-            {
-                api.Add(info);
-                //_pviContext.CpuService.CreateCpu(info.Name, info.IpAddress);
-            }).ConfigureAwait(false);
-        }
-
-
-        public void Disconnect()
-        {
-            _pviContext.Dispose();
-        }
-
 
     }
 }
