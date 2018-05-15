@@ -1,8 +1,5 @@
-﻿using System;
+﻿using ControlWorks.Services.PVI.Impl;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using ControlWorks.Services.PVI.Impl;
 
 namespace ControlWorks.Services.PVI.Panel
 {
@@ -15,18 +12,16 @@ namespace ControlWorks.Services.PVI.Panel
         CpuDetailResponse FindCpuByIp(string ip);
         void Add(CpuInfo info);
         void Update(CpuInfo info);
+        List<string> GetCpuNames();
+
     }
 
     public class CpuManager : ICpuManager
     {
-        private readonly IServiceWrapper _serviceWrapper;
         private readonly ICpuWrapper _cpuWrapper;
-        private readonly ICpuInfoService _cpuInfoService;
 
-        public CpuManager(IServiceWrapper serviceWrapper, ICpuInfoService cpuInfoService, IFileWrapper fileWrapper, ICpuWrapper cpuWrapper)
+        public CpuManager(ICpuWrapper cpuWrapper)
         {
-            _serviceWrapper = serviceWrapper;
-            _cpuInfoService = cpuInfoService;
             _cpuWrapper = cpuWrapper;
         }
 
@@ -75,6 +70,11 @@ namespace ControlWorks.Services.PVI.Panel
                 .AddOrUpdate(info);
 
             _cpuWrapper.CreateCpu(info);
+        }
+
+        public List<string> GetCpuNames()
+        {
+            return _cpuWrapper.GetCpuNames();
         }
 
         #endregion

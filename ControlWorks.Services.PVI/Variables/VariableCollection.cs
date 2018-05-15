@@ -1,11 +1,26 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
-namespace ControlWorks.Services.PVI
+namespace ControlWorks.Services.PVI.Variables
 {
+    public interface IVariableInfoCollection
+    {
+        List<VariableInfo> GetAll();
+        void AddCpuRange(string[] cpuList);
+        void RemoveCpuRange(string[] cpuList);
+        VariableInfo FindByCpu(string name);
+        void AddRange(string cpuName, IEnumerable<string> variableNames);
+        void RemoveRange(string cpuName, IEnumerable<string> variableNames);
+        void Add(string cpuName, string variableName);
+        void Remove(string cpuName, string variableName);
+        void Open(string filepath);
+        void Save(string filepath);
+    }
+
+
     public class VariableInfo
     {
         public string CpuName { get; set; }
@@ -13,17 +28,16 @@ namespace ControlWorks.Services.PVI
     }
     public class VariableInfoCollection
     {
-        public static readonly object SyncLock = new object();
-
         private const string VariableMaster = "VARIABLE_MASTER";
 
         private readonly Dictionary<string, VariableInfo> _variableLookup;
         private readonly IFileWrapper _fileWrapper;
 
 
-        public VariableInfoCollection()
+        public VariableInfoCollection(IFileWrapper fileWrapper)
         {
             _variableLookup = new Dictionary<string, VariableInfo>();
+            _fileWrapper = fileWrapper;
 
         }
 
@@ -164,18 +178,16 @@ namespace ControlWorks.Services.PVI
 
         public void Open(string filepath)
         {
-            lock (SyncLock)
-            {
-                if (File.Exists(filepath))
-                {
-                    var json = _fileWrapper.Read(filepath);
-                    var list = JsonConvert.DeserializeObject<List<VariableInfo>>(json);
-                    _variableLookup.Clear();
+            var json = _fileWrapper.Read(filepath);
 
-                    foreach (var v in list)
-                    {
-                        _variableLookup.Add(v.CpuName, v);
-                    }
+            if (!String.IsNullOrEmpty(json))
+            {
+                var list = JsonConvert.DeserializeObject<List<VariableInfo>>(json);
+                _variableLookup.Clear();
+
+                foreach (var v in list)
+                {
+                    _variableLookup.Add(v.CpuName, v);
                 }
             }
         }
@@ -188,18 +200,9 @@ namespace ControlWorks.Services.PVI
                 path = $"{filepath}.config";
             }
             var fi = new FileInfo(path);
+            string json = JsonConvert.SerializeObject(new List<VariableInfo>(_variableLookup.Values));
 
-            if (fi.DirectoryName != null)
-            {
-                if (!Directory.Exists(fi.DirectoryName))
-                {
-                    Directory.CreateDirectory(fi.DirectoryName);
-                }
-
-                string json = JsonConvert.SerializeObject(new List<VariableInfo>(_variableLookup.Values));
-
-                _fileWrapper.Write(fi.FullName, json);
-            }
+            _fileWrapper.Write(fi.FullName, json);
         }
     }
 }

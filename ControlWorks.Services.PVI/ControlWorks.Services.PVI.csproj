@@ -48,7 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileWrapper.cs" />
+    <Compile Include="DataResponse.cs" />
+    <Compile Include="Impl\FileWrapper.cs" />
     <Compile Include="Impl\CpuWrapper.cs" />
     <Compile Include="Impl\VariableWrapper.cs" />
     <Compile Include="Panel\CpuInfo.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Variables\VariableData.cs" />
     <Compile Include="Variables\VariableManager.cs" />
-    <Compile Include="Variables\VariableApi.cs" />
     <Compile Include="Variables\VariableCollection.cs" />
     <Compile Include="Variables\VariableDetailRespose.cs" />
   </ItemGroup>

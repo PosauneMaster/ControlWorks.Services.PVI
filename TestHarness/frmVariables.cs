@@ -18,7 +18,7 @@ namespace TestHarness
 
             var filepath = AppSettings.VariableSettingsFile;
 
-            var collection = new VariableInfoCollection();
+            var collection = new VariableInfoCollection(new FileWrapper());
             collection.Open(filepath);
             var cpuName = txtCpuName.Text;
             var names = txtVariables.Lines;
@@ -29,15 +29,15 @@ namespace TestHarness
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            //var filepath = ConfigurationProvider.VariableSettingsFile;
+            var filepath = AppSettings.VariableSettingsFile;
 
-            //var collection = new VariableInfoCollection();
-            //collection.Open(filepath);
-            //var cpuName = txtCpuName.Text;
-            //var names = txtVariables.Lines;
+            var collection = new VariableInfoCollection(new FileWrapper());
+            collection.Open(filepath);
+            var cpuName = txtCpuName.Text;
+            var names = txtVariables.Lines;
 
-            //collection.RemoveRange(cpuName, names);
-            //collection.Save(filepath);
+            collection.RemoveRange(cpuName, names);
+            collection.Save(filepath);
 
 
         }

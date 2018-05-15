@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Forms;
-using BR.AN.PviServices;
-using ControlWorks.Services.PVI.Impl;
+﻿using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI.Pvi
@@ -20,8 +21,6 @@ namespace ControlWorks.Services.PVI.Pvi
         Task<CpuDetailResponse> GetCpuByName(string name);
         Task DeleteCpuByName(string name);
         Task DeleteCpuByIp(string ip);
-
-
     }
     public class PviAplication : IPviAplication
     {
@@ -59,14 +58,13 @@ namespace ControlWorks.Services.PVI.Pvi
 
             _eventNotifier.CpuManangerInitialized += _eventNotifier_CpuManangerInitialized;
 
-
             _pviContext = new PviContext(_serviceWrapper);
             Application.Run(_pviContext);
         }
 
         private void _eventNotifier_CpuManangerInitialized(object sender, System.EventArgs e)
         {
-            throw new System.NotImplementedException();
+            _variableManager.ConnectVariables(_cpuManager.GetCpuNames());
         }
 
         public void Disconnect()
@@ -98,6 +96,72 @@ namespace ControlWorks.Services.PVI.Pvi
         {
             await Task.Run(() => _cpuManager.DisconnectCpuByIp(ip));
         }
+
+        public async Task<DataResponse> GetPanelCpuAsync(string cpuName)
+        {
+            var response =  await Task.Run(() => GetCpuData(cpuName));
+            return response;
+        }
+
+        private DataResponse GetCpuData(string cpuName)
+        {
+            var cpu = _cpuManager.FindCpuByName(cpuName);
+
+            if (cpu == null)
+            {
+                return new DataResponse()
+                {
+                    Name = cpuName,
+                    Data = null,
+                    Error = new ErrorResponse
+                    {
+                        Error = $"A Cpu with the name {cpuName} is not found"
+                    }
+                };
+            }
+
+            if (cpu.HasError)
+            {
+                return new DataResponse()
+                {
+                    Name = cpuName,
+                    Data = null,
+                    Error = new ErrorResponse
+                    {
+                        Error = $"A Cpu with the name {cpuName} is in an error state.  {cpu.Error.ErrorText}"
+                    }
+                };
+            }
+
+            var list = _variableManager.GetVariables(cpuName);
+
+            if (list.Count == 0)
+            {
+                return new DataResponse()
+                {
+                    Name = cpuName,
+                    Data = null,
+                    Error = new ErrorResponse
+                    {
+                        Error = $"No variables found for {cpuName}"
+                    }
+                };
+            }
+            dynamic variables = new ExpandoObject();
+            var variableDict = (IDictionary<string, object>)variables;
+
+            foreach (var tuple in list)
+            {
+                variableDict.Add(tuple.Item1, tuple.Item2);
+            }
+
+            return new DataResponse
+            {
+                Name = cpuName,
+                Data = variableDict as ExpandoObject
+            };
+        }
+
 
         #endregion
 

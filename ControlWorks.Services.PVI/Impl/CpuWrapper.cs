@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using BR.AN.PviServices;
+﻿using BR.AN.PviServices;
 using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Panel;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace ControlWorks.Services.PVI.Impl
 {
@@ -18,6 +15,7 @@ namespace ControlWorks.Services.PVI.Impl
         void DisconnectCpu(CpuInfo info);
         CpuDetailResponse GetCpuByName(CpuInfo info);
         List<CpuDetailResponse> GetAllCpus(IEnumerable<CpuInfo> cpuInfo);
+        List<string> GetCpuNames();
     }
 
     public class CpuWrapper : ICpuWrapper
@@ -43,6 +41,17 @@ namespace ControlWorks.Services.PVI.Impl
             {
                 CreateCpu(cpuInfo);
             }
+        }
+
+        public List<string> GetCpuNames()
+        {
+            var list = new List<string>();
+            foreach (Cpu cpu in _service.Cpus)
+            {
+                list.Add(cpu.Name);
+            }
+
+            return list;
         }
 
         public void CreateCpu(CpuInfo cpuInfo)

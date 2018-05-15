@@ -1,5 +1,6 @@
 ﻿using System;
 using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Panel;
 
 namespace ControlWorks.Services.PVI.Impl
 {
@@ -17,7 +18,6 @@ namespace ControlWorks.Services.PVI.Impl
 
         public bool IsConnected => _service.IsConnected;
         public bool HasError => _service.HasError;
-
         public ServiceWrapper(IEventNotifier eventNotifier)
         {
             _eventNotifier = eventNotifier;
@@ -55,13 +55,17 @@ namespace ControlWorks.Services.PVI.Impl
             var cpuWrapper = new CpuWrapper(_service, _eventNotifier);
             var variableWrapper = new VariableWrapper(_service, _eventNotifier);
 
+            var fw = new FileWrapper();
+            var cpuManager = new CpuManager(cpuWrapper);
+
             var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper._service_Connected; ServiceName={serviceName}", e);
             _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs()
             {
                 Message = pviEventMsg,
                 ServiceWrapper = this,
                 CpuWrapper = cpuWrapper,
-                VariableWrapper = variableWrapper
+                VariableWrapper = variableWrapper,
+                CpuManager = cpuManager
             });
         }
 

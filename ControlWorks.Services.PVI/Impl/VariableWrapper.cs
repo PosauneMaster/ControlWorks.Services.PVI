@@ -1,11 +1,8 @@
-﻿using System;
+﻿using BR.AN.PviServices;
+using ControlWorks.Services.PVI.Variables;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BR.AN.PviServices;
-using ControlWorks.Services.PVI.Variables;
 
 namespace ControlWorks.Services.PVI.Impl
 {
@@ -13,6 +10,7 @@ namespace ControlWorks.Services.PVI.Impl
     {
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
         void ConnectVariable(string cpuName, string name);
+        List<Tuple<string, string>> ReadVariables(VariableInfo info);
 
     }
 
@@ -26,6 +24,27 @@ namespace ControlWorks.Services.PVI.Impl
             _service = service;
             _eventNotifier = eventNotifier;
         }
+
+        public List<Tuple<string, string>> ReadVariables(VariableInfo info)
+        {
+            var list = new List<Tuple<string, string>>();
+            if (_service.Cpus.ContainsKey(info.CpuName))
+            {
+                var cpu = _service.Cpus[info.CpuName];
+
+                foreach (var variable in info.Variables)
+                {
+                    if (cpu.Variables.ContainsKey(variable))
+                    {
+                        var value = ConvertVariableValue(cpu.Variables[variable].Value);
+                        list.Add(new Tuple<string, string>(variable, value));
+                    }
+                }
+            }
+
+            return list;
+        }
+
 
         public void ConnectVariables(string cpuName, IEnumerable<string> variables)
         {
@@ -44,6 +63,46 @@ namespace ControlWorks.Services.PVI.Impl
             {
                 ConnectVariable(_service.Cpus[cpuName], name);
             }
+        }
+
+        private string ConvertVariableValue(Value v)
+        {
+            if (v == null)
+            {
+                return String.Empty;
+            }
+
+            switch (v.DataType)
+            {
+
+                case DataType.Boolean:
+                    return v.ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+
+                case DataType.SByte:
+                case DataType.Int16:
+                case DataType.Int32:
+                case DataType.Int64:
+                case DataType.Byte:
+                case DataType.UInt16:
+                case DataType.UInt32:
+                case DataType.UInt64:
+                case DataType.Single:
+                case DataType.WORD:
+                case DataType.DWORD:
+                case DataType.UInt8:
+                    return v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+
+                case DataType.Double:
+                    return v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+
+                case DataType.DateTime:
+                case DataType.Date:
+                case DataType.DT:
+                    return v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
+            }
+
+            return v.ToString(CultureInfo.CurrentCulture);
+
         }
 
         private void ConnectVariable(Cpu cpu, string name)
