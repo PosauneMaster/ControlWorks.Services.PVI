@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -12,5 +8,11 @@ namespace ControlWorks.Services.Messaging
         public Type Type { get; set; }
         public MessageAction Action { get; set; }
         public string Data { get; set; }
+    }
+
+    public class VariableRequestMessage
+    {
+        public string CpuName { get; set; }
+        public string[] VariableNames { get; set; }
     }
 }

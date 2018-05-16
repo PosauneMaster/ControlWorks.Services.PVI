@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ControlWorks.Services.ConfigurationProvider;
+using ControlWorks.Services.PVI.Pvi;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -12,8 +13,17 @@ namespace ControlWorks.Services.Messaging
 {
     public class Service
     {
+        private MessageProcessor _msgProc;
+
+        public Service()
+        {
+        }
+
+
         public void StartResponseServer()
         {
+            var pviApplication = new PviAplication();
+            _msgProc = new MessageProcessor(pviApplication);
             Task.Factory.StartNew(() => ResponseServer(AppSettings.Port), TaskCreationOptions.LongRunning);
         }
 

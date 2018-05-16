@@ -17,11 +17,18 @@ namespace ControlWorks.Services.Messaging
         Stop,
         IsConnected,
         IsError,
-        AddCpu
+        AddCpu,
+        UpdateCpu,
+        GetCpuByName,
+        GetCpuByIp,
+        DeleteCpuByName,
+        DeleteCpuByIp,
+        GetAllCpuData
+
     }
     public class MessageProcessor
     {
-        private IPviAplication _application;
+        private readonly IPviAplication _application;
 
         public MessageProcessor()
         {
@@ -56,6 +63,29 @@ namespace ControlWorks.Services.Messaging
                     var cpuInfo = JsonConvert.DeserializeObject<CpuInfo>(message.Data);
                     _application.AddCpu(cpuInfo);
                     return new ResponseMessage() { Message = "AddCpu", IsSuccess = true };
+                case MessageAction.UpdateCpu:
+                    var cpuUpdateInfo = JsonConvert.DeserializeObject<CpuInfo>(message.Data);
+                    _application.UpdateCpu(cpuUpdateInfo);
+                    return new ResponseMessage() { Message = "UpdateCpu", IsSuccess = true };
+                case MessageAction.GetCpuByName:
+                    _application.GetCpuByName(message.Data);
+                    return new ResponseMessage() { Message = "GetCpuByName", IsSuccess = true };
+                case MessageAction.GetCpuByIp:
+                    _application.GetCpuByIp(message.Data);
+                    return new ResponseMessage() { Message = "GetCpuByIp", IsSuccess = true };
+                case MessageAction.DeleteCpuByName:
+                    _application.DeleteCpuByName(message.Data);
+                    return new ResponseMessage() { Message = "DeleteCpuByName", IsSuccess = true };
+                case MessageAction.DeleteCpuByIp:
+                    _application.DeleteCpuByIp(message.Data);
+                    return new ResponseMessage() { Message = "DeleteCpuByIp", IsSuccess = true };
+                case MessageAction.GetAllCpuData:
+
+                    var requestData = JsonConvert.DeserializeObject<VariableRequestMessage>(message.Data);
+                    _application.GetCpuDataAsync(requestData.CpuName, requestData.VariableNames);
+                    return new ResponseMessage() { Message = "GetAllCpuData", IsSuccess = true };
+
+
                 default:
                     break;
             }

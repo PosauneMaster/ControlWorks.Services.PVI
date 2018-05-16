@@ -45,7 +45,6 @@ namespace ControlWorks.Services.PVI.Impl
             return list;
         }
 
-
         public void ConnectVariables(string cpuName, IEnumerable<string> variables)
         {
             if (!String.IsNullOrEmpty(cpuName) && variables != null)
@@ -145,7 +144,7 @@ namespace ControlWorks.Services.PVI.Impl
                 IpAddress = cpu.Connection.TcpIp.DestinationIpAddress,
                 DataType = Enum.GetName(typeof(DataType), variable.Value.DataType),
                 VariableName = e.Name,
-                Value = variable.Value.ToString(CultureInfo.InvariantCulture)
+                Value = ConvertVariableValue(variable.Value)
             };
 
             _eventNotifier.OnVariableValueChanged(sender, new PviApplicationEventArgs() { Message = data.ToJson() });

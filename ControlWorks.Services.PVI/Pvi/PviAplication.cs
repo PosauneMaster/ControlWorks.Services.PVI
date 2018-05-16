@@ -4,6 +4,7 @@ using ControlWorks.Services.PVI.Variables;
 using log4net;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
@@ -19,8 +20,11 @@ namespace ControlWorks.Services.PVI.Pvi
         Task AddCpu(CpuInfo info);
         Task UpdateCpu(CpuInfo info);
         Task<CpuDetailResponse> GetCpuByName(string name);
+        Task<CpuDetailResponse> GetCpuByIp(string ip);
         Task DeleteCpuByName(string name);
         Task DeleteCpuByIp(string ip);
+        Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null);
+
     }
     public class PviAplication : IPviAplication
     {
@@ -87,6 +91,11 @@ namespace ControlWorks.Services.PVI.Pvi
             return await Task.Run(() => _cpuManager.FindCpuByName(name));
         }
 
+        public async Task<CpuDetailResponse> GetCpuByIp(string ip)
+        {
+            return await Task.Run(() => _cpuManager.FindCpuByIp(ip));
+        }
+
         public async Task DeleteCpuByName(string name)
         {
             await Task.Run(() => _cpuManager.DisconnectCpuByName(name));
@@ -97,13 +106,19 @@ namespace ControlWorks.Services.PVI.Pvi
             await Task.Run(() => _cpuManager.DisconnectCpuByIp(ip));
         }
 
-        public async Task<DataResponse> GetPanelCpuAsync(string cpuName)
+        public async Task<DataResponse> GetCpuDataAsync(string cpuName)
         {
             var response =  await Task.Run(() => GetCpuData(cpuName));
             return response;
         }
 
-        private DataResponse GetCpuData(string cpuName)
+        public async Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null)
+        {
+            var response = await Task.Run(() => GetCpuData(cpuName, variableNames));
+            return response;
+        }
+
+        private DataResponse GetCpuData(string cpuName, IEnumerable<string> variableNames = null)
         {
             var cpu = _cpuManager.FindCpuByName(cpuName);
 
@@ -133,9 +148,15 @@ namespace ControlWorks.Services.PVI.Pvi
                 };
             }
 
-            var list = _variableManager.GetVariables(cpuName);
+            var variableList = new List<string>();
+            if (variableNames != null)
+            {
+                variableList.AddRange(variableNames);
+            }
 
-            if (list.Count == 0)
+            var responseList = variableList.Count == 0 ? _variableManager.GetAllVariables(cpuName) : _variableManager.GetVariables(cpuName, variableList);
+
+            if (responseList.Count == 0)
             {
                 return new DataResponse()
                 {
@@ -150,7 +171,7 @@ namespace ControlWorks.Services.PVI.Pvi
             dynamic variables = new ExpandoObject();
             var variableDict = (IDictionary<string, object>)variables;
 
-            foreach (var tuple in list)
+            foreach (var tuple in responseList)
             {
                 variableDict.Add(tuple.Item1, tuple.Item2);
             }
