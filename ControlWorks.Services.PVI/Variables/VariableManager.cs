@@ -9,9 +9,11 @@ namespace ControlWorks.Services.PVI.Variables
 {
     public interface IVariableManager
     {
-        void ConnectVariables(IEnumerable<string> cpuNames);
+        void ConnectVariables(IList<string> cpuNames);
         List<Tuple<string, string>> GetAllVariables(string cpuName);
-        List<Tuple<string, string>> GetVariables(string cpuName, IEnumerable<string> variableNames);
+        List<Tuple<string, string>> GetVariables(string cpuName, IList<string> variableNames);
+        void AddVariableRange(string cpuName, IList<string> variableNames);
+        void RemoveVariableRange(string cpuName, IList<string> variableNames);
 
     }
     public class VariableManager : IVariableManager
@@ -34,14 +36,14 @@ namespace ControlWorks.Services.PVI.Variables
             return _variableWrapper.ReadVariables(info);
         }
 
-        public List<Tuple<string, string>> GetVariables(string cpuName, IEnumerable<string> variableNames)
+        public List<Tuple<string, string>> GetVariables(string cpuName, IList<string> variableNames)
         {
             var info = _variableInfoCollection.FindByCpu(cpuName);
             info.Variables = variableNames.ToArray();
             return _variableWrapper.ReadVariables(info);
         }
 
-        public void ConnectVariables(IEnumerable<string> cpuNames)
+        public void ConnectVariables(IList<string> cpuNames)
         {
             _variableInfoCollection.Open(AppSettings.VariableSettingsFile);
             foreach (var cpuName in cpuNames)
@@ -50,5 +52,17 @@ namespace ControlWorks.Services.PVI.Variables
                 _variableWrapper.ConnectVariables(info.CpuName, info.Variables);
             }
         }
+
+        public void AddVariableRange(string cpuName, IList<string> variableNames)
+        {
+            _variableInfoCollection.AddRange(cpuName, variableNames);
+            _variableWrapper.AddVariableRange(cpuName, variableNames);
+        }
+
+        public void RemoveVariableRange(string cpuName, IList<string> variableNames)
+        {
+
+        }
+
     }
 }

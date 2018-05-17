@@ -11,6 +11,9 @@ namespace ControlWorks.Services.PVI.Impl
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
         void ConnectVariable(string cpuName, string name);
         List<Tuple<string, string>> ReadVariables(VariableInfo info);
+        void AddVariableRange(string cpuName, IEnumerable<string> variableNames);
+        void RemoveVariableRange(string cpuName, IEnumerable<string> variableNames);
+
 
     }
 

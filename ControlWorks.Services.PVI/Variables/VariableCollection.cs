@@ -96,7 +96,9 @@ namespace ControlWorks.Services.PVI.Variables
 
         public void AddRange(string cpuName, IEnumerable<string> variableNames)
         {
-            foreach (var name in variableNames)
+            var list = new List<string>(variableNames);
+
+            foreach (var name in list)
             {
                 Add(cpuName, name);
             }

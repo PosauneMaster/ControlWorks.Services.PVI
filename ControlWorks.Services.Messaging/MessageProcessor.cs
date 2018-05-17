@@ -80,7 +80,6 @@ namespace ControlWorks.Services.Messaging
                     _application.DeleteCpuByIp(message.Data);
                     return new ResponseMessage() { Message = "DeleteCpuByIp", IsSuccess = true };
                 case MessageAction.GetAllCpuData:
-
                     var requestData = JsonConvert.DeserializeObject<VariableRequestMessage>(message.Data);
                     _application.GetCpuDataAsync(requestData.CpuName, requestData.VariableNames);
                     return new ResponseMessage() { Message = "GetAllCpuData", IsSuccess = true };

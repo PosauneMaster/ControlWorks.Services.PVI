@@ -24,6 +24,9 @@ namespace ControlWorks.Services.PVI.Pvi
         Task DeleteCpuByName(string name);
         Task DeleteCpuByIp(string ip);
         Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null);
+        Task AddRange(string cpuName, IEnumerable<string> variableNames);
+        Task RemoveRange(string cpuName, IEnumerable<string> variableNames);
+
 
     }
     public class PviAplication : IPviAplication
@@ -182,6 +185,16 @@ namespace ControlWorks.Services.PVI.Pvi
                 Data = variableDict as ExpandoObject
             };
         }
+
+        public async Task AddRange(string cpuName, IEnumerable<string> variableNames)
+        {
+        }
+
+        public Task RemoveRange(string cpuName, IEnumerable<string> variableNames)
+        {
+
+        }
+
 
 
         #endregion
