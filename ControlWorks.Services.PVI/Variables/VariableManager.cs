@@ -12,8 +12,8 @@ namespace ControlWorks.Services.PVI.Variables
         void ConnectVariables(IList<string> cpuNames);
         List<Tuple<string, string>> GetAllVariables(string cpuName);
         List<Tuple<string, string>> GetVariables(string cpuName, IList<string> variableNames);
-        void AddVariableRange(string cpuName, IList<string> variableNames);
-        void RemoveVariableRange(string cpuName, IList<string> variableNames);
+        void AddVariables(string cpuName, IList<string> variableNames);
+        void RemoveVariables(string cpuName, IList<string> variableNames);
 
     }
     public class VariableManager : IVariableManager
@@ -53,15 +53,16 @@ namespace ControlWorks.Services.PVI.Variables
             }
         }
 
-        public void AddVariableRange(string cpuName, IList<string> variableNames)
+        public void AddVariables(string cpuName, IList<string> variableNames)
         {
             _variableInfoCollection.AddRange(cpuName, variableNames);
-            _variableWrapper.AddVariableRange(cpuName, variableNames);
+            _variableWrapper.ConnectVariables(cpuName, variableNames);
         }
 
-        public void RemoveVariableRange(string cpuName, IList<string> variableNames)
+        public void RemoveVariables(string cpuName, IList<string> variableNames)
         {
-
+            _variableInfoCollection.RemoveRange(cpuName, variableNames);
+            _variableWrapper.DisconnectVariables(cpuName, variableNames);
         }
 
     }

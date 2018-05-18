@@ -11,8 +11,7 @@ namespace ControlWorks.Services.PVI.Impl
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
         void ConnectVariable(string cpuName, string name);
         List<Tuple<string, string>> ReadVariables(VariableInfo info);
-        void AddVariableRange(string cpuName, IEnumerable<string> variableNames);
-        void RemoveVariableRange(string cpuName, IEnumerable<string> variableNames);
+        void DisconnectVariables(string cpuName, IEnumerable<string> variableNames);
 
 
     }
@@ -163,6 +162,22 @@ namespace ControlWorks.Services.PVI.Impl
         {
             var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Variable_Connected", e);
             _eventNotifier.OnVariableConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
+        }
+
+        public void DisconnectVariables(string cpuName, IEnumerable<string> variableNames)
+        {
+            foreach (var v in variableNames)
+            {
+                if (_service.Cpus.ContainsKey(cpuName))
+                {
+                    var variables = _service.Cpus[cpuName].Variables;
+                    if (variables.ContainsKey(v))
+                    {
+                        variables[v].Disconnect();
+                        variables.Remove(variables[v]);
+                    }
+                }
+            }
         }
 
     }

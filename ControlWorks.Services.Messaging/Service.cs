@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ControlWorks.Services.ConfigurationProvider;
+using ControlWorks.Services.PVI;
 using ControlWorks.Services.PVI.Pvi;
 using NetMQ;
 using NetMQ.Sockets;
+using Newtonsoft.Json;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -35,8 +37,13 @@ namespace ControlWorks.Services.Messaging
                 server.ReceiveReady += (s, a) =>
                 {
                     var message = a.Socket.ReceiveFrameString();
-                    Console.WriteLine("Received {0}", message);
-                    a.Socket.SendFrame($"Hello {message}");
+
+                    var response =  _msgProc.Process(message);
+
+                    var responseJson = JsonConvert.SerializeObject(response);
+
+
+                    a.Socket.SendFrame(responseJson);
                 };
 
                 poller.Run();

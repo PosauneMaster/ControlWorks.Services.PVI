@@ -24,8 +24,8 @@ namespace ControlWorks.Services.PVI.Pvi
         Task DeleteCpuByName(string name);
         Task DeleteCpuByIp(string ip);
         Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null);
-        Task AddRange(string cpuName, IEnumerable<string> variableNames);
-        Task RemoveRange(string cpuName, IEnumerable<string> variableNames);
+        Task AddVariables(string cpuName, IList<string> variableNames);
+        Task RemoveVariables(string cpuName, IList<string> variableNames);
 
 
     }
@@ -186,16 +186,16 @@ namespace ControlWorks.Services.PVI.Pvi
             };
         }
 
-        public async Task AddRange(string cpuName, IEnumerable<string> variableNames)
+        public async Task AddVariables(string cpuName, IList<string> variableNames)
         {
-        }
-
-        public Task RemoveRange(string cpuName, IEnumerable<string> variableNames)
-        {
+            await Task.Run(() => _variableManager.AddVariables(cpuName, variableNames));
 
         }
 
-
+        public async Task RemoveVariables(string cpuName, IList<string> variableNames)
+        {
+            await Task.Run(() => _variableManager.RemoveVariables(cpuName, variableNames));
+        }
 
         #endregion
 
