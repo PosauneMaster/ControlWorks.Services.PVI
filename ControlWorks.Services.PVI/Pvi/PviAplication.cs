@@ -15,8 +15,8 @@ namespace ControlWorks.Services.PVI.Pvi
     {
         void Connect();
         void Disconnect();
-        bool IsConnected { get; }
-        bool HasError { get; }
+        bool GetIsConnected();
+        bool GetHasError();
         Task AddCpu(CpuInfo info);
         Task UpdateCpu(CpuInfo info);
         Task<CpuDetailResponse> GetCpuByName(string name);
@@ -39,9 +39,6 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private readonly IEventNotifier _eventNotifier;
         private readonly IServiceWrapper _serviceWrapper;
-
-        public bool IsConnected => _serviceWrapper.IsConnected;
-        public bool HasError => _serviceWrapper.HasError;
 
         public PviAplication()
         {
@@ -67,6 +64,16 @@ namespace ControlWorks.Services.PVI.Pvi
 
             _pviContext = new PviContext(_serviceWrapper);
             Application.Run(_pviContext);
+        }
+
+        public bool GetIsConnected()
+        {
+            return _serviceWrapper.IsConnected;
+        }
+
+        public bool GetHasError()
+        {
+            return _serviceWrapper.HasError;
         }
 
         private void _eventNotifier_CpuManangerInitialized(object sender, System.EventArgs e)

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ControlWorks.Services.ConfigurationProvider;
-using ControlWorks.Services.PVI;
+﻿using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Pvi;
 using NetMQ;
 using NetMQ.Sockets;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -34,6 +28,7 @@ namespace ControlWorks.Services.Messaging
             using (var server = new ResponseSocket($@"tcp://*:{port}"))
             using (var poller = new NetMQPoller() { server })
             {
+                
                 server.ReceiveReady += (s, a) =>
                 {
                     var message = a.Socket.ReceiveFrameString();
@@ -42,11 +37,10 @@ namespace ControlWorks.Services.Messaging
 
                     var responseJson = JsonConvert.SerializeObject(response);
 
-
                     a.Socket.SendFrame(responseJson);
                 };
 
-                poller.Run();
+                poller.RunAsync();
             }
         }
     }

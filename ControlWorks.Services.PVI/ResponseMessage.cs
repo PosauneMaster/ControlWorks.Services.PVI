@@ -1,7 +1,10 @@
-﻿namespace ControlWorks.Services.PVI
+﻿using System;
+
+namespace ControlWorks.Services.PVI
 {
     public class ResponseMessage
     {
+        public Guid Id { get; set; }
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
 

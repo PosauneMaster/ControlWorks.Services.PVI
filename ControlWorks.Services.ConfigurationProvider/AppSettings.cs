@@ -10,5 +10,17 @@ namespace ControlWorks.Services.ConfigurationProvider
         public static string Port => ConfigurationManager.AppSettings["Port"];
         public static string ShutdownTriggerVariable => ConfigurationManager.AppSettings["ShutdownTriggerVariable"];
         public static byte SourceStationId => (byte)(Convert.ToByte(ConfigurationManager.AppSettings["SourceStationId"]).Equals(0) ? 0x64 : Convert.ToByte(ConfigurationManager.AppSettings["SourceStationId"]));
+        public static int MessageTimeout
+        {
+            get
+            {
+                if (Int32.TryParse(ConfigurationManager.AppSettings["MessageTimeout"], out var timeout))
+                {
+                    return timeout;
+                }
+
+                return 1000;
+            }
+        }
     }
 }
