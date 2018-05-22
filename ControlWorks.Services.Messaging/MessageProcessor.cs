@@ -1,13 +1,12 @@
-﻿using ControlWorks.Services.PVI;
+﻿using ControlWorks.Services.ConfigurationProvider;
+using ControlWorks.Services.PVI;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Pvi;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
-using ControlWorks.Services.ConfigurationProvider;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -39,6 +38,25 @@ namespace ControlWorks.Services.Messaging
         {
             _application = application;
         }
+
+        private ResponseMessage ProcessAction<T>(Action<T> action, Message message)
+        {
+            ResponseMessage response;
+
+            try
+            {
+                response = BuildResponse(message.Id, message.Action.ToString(), true);
+            }
+            catch (Exception e)
+            {
+                ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
+                response = BuildResponse(message.Id, message.Action.ToString(), false, errors);
+            }
+            return response;
+        }
+
+
+
 
         private ResponseMessage ProcessAction(Action action, Message message)
         {
@@ -76,7 +94,7 @@ namespace ControlWorks.Services.Messaging
             return response;
         }
 
-        private ResponseMessage ProcessAction<T>(Func<T, Task> action, Message message, T data)
+        private ResponseMessage ProcessAction<T>(Action<T> action, Message message, T data)
         {
             ResponseMessage response;
 
@@ -94,13 +112,13 @@ namespace ControlWorks.Services.Messaging
             return response;
         }
 
-        private ResponseMessage ProcessAction<T, TK>(Func<T, Task<TK>> action, Message message, T data) where TK : class
+        private ResponseMessage ProcessAction<T>(Func<string, T> action, Message message, string data)
         {
             ResponseMessage response;
 
             try
             {
-                var result = action(data) as TK;
+                var result = action(data);
                 response = BuildResponse(message.Id, JsonConvert.SerializeObject(result), true);
 
             }
@@ -147,11 +165,15 @@ namespace ControlWorks.Services.Messaging
                     return ProcessAction(_application.GetCpuByName, message, message.Data);
 
                 case MessageAction.GetCpuByIp:
-                    _application.GetCpuByIp(message.Data);
-                    return new ResponseMessage() { Message = "GetCpuByIp", IsSuccess = true };
+
+                    return ProcessAction(_application.GetCpuByIp, message, message.Data);
+
                 case MessageAction.DeleteCpuByName:
-                    _application.DeleteCpuByName(message.Data);
-                    return new ResponseMessage() { Message = "DeleteCpuByName", IsSuccess = true };
+
+                    Action<string> a = _application.DeleteCpuByName;
+
+                    return ProcessAction(a, message);
+
                 case MessageAction.DeleteCpuByIp:
                     _application.DeleteCpuByIp(message.Data);
                     return new ResponseMessage() { Message = "DeleteCpuByIp", IsSuccess = true };

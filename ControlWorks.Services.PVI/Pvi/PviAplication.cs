@@ -17,12 +17,12 @@ namespace ControlWorks.Services.PVI.Pvi
         void Disconnect();
         bool GetIsConnected();
         bool GetHasError();
-        Task AddCpu(CpuInfo info);
-        Task UpdateCpu(CpuInfo info);
-        Task<CpuDetailResponse> GetCpuByName(string name);
-        Task<CpuDetailResponse> GetCpuByIp(string ip);
-        Task DeleteCpuByName(string name);
-        Task DeleteCpuByIp(string ip);
+        void AddCpu(CpuInfo info);
+        void UpdateCpu(CpuInfo info);
+        CpuDetailResponse GetCpuByName(string name);
+        CpuDetailResponse GetCpuByIp(string ip);
+        void DeleteCpuByName(string name);
+        void DeleteCpuByIp(string ip);
         Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null);
         Task AddVariables(string cpuName, IList<string> variableNames);
         Task RemoveVariables(string cpuName, IList<string> variableNames);
@@ -86,34 +86,34 @@ namespace ControlWorks.Services.PVI.Pvi
             _pviContext.Dispose();
         }
 
-        public async Task AddCpu(CpuInfo info)
+        public void AddCpu(CpuInfo info)
         {
-            await Task.Run(() => _cpuManager.Add(info));
+            _cpuManager.Add(info);
         }
 
-        public async Task UpdateCpu(CpuInfo info)
+        public void UpdateCpu(CpuInfo info)
         {
-            await Task.Run(() => _cpuManager.Update(info));
+            _cpuManager.Update(info);
         }
 
-        public async Task<CpuDetailResponse> GetCpuByName(string name)
+        public CpuDetailResponse GetCpuByName(string name)
         {
-            return await Task.Run(() => _cpuManager.FindCpuByName(name));
+            return _cpuManager.FindCpuByName(name);
         }
 
-        public async Task<CpuDetailResponse> GetCpuByIp(string ip)
+        public CpuDetailResponse GetCpuByIp(string ip)
         {
-            return await Task.Run(() => _cpuManager.FindCpuByIp(ip));
+            return _cpuManager.FindCpuByIp(ip);
         }
 
-        public async Task DeleteCpuByName(string name)
+        public void DeleteCpuByName(string name)
         {
-            await Task.Run(() => _cpuManager.DisconnectCpuByName(name));
+            _cpuManager.DisconnectCpuByName(name);
         }
 
-        public async  Task DeleteCpuByIp(string ip)
+        public void DeleteCpuByIp(string ip)
         {
-            await Task.Run(() => _cpuManager.DisconnectCpuByIp(ip));
+            _cpuManager.DisconnectCpuByIp(ip);
         }
 
         public async Task<DataResponse> GetCpuDataAsync(string cpuName)

@@ -241,28 +241,114 @@ namespace UnitTestProject1
 
             var message = JsonConvert.SerializeObject(m);
             Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
-            pviApplicationMock.Setup(p => p.GetCpuByName(It.IsAny<string>())).Returns(Task.FromResult(cpuDetailResponse));
+            pviApplicationMock.Setup(p => p.GetCpuByName(It.IsAny<string>())).Returns(cpuDetailResponse);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
 
             pviApplicationMock.Verify(p => p.GetCpuByName(It.IsAny<string>()), Times.Once);
 
-            //dynamic obj = JsonConvert.DeserializeObject<ExpandoObject>(response.Message, new ExpandoObjectConverter());
-            //var dict = (IDictionary<string, object>)obj;
+            var result = JsonConvert.DeserializeObject<CpuDetailResponse>(response.Message);
 
-            //Assert.True(dict.Keys.Count == 1);
-            //Assert.True(dict.Keys.Contains("IsError"));
-            //Assert.Equal("True", dict["IsError"].ToString());
-            //Assert.Equal(guid, response.Id);
-            //Assert.True(response.IsSuccess);
-            //Assert.Null(response.Errors);
-
+            Assert.NotNull(result);
+            Assert.IsType<CpuDetailResponse>(result);
+            Assert.Equal("cpuname1", result.Description);
+            Assert.True(result.IsConnected);
+            Assert.False(result.HasError);
+            Assert.Equal("120.0.0.1", result.IpAddress);
+            Assert.Equal("cpuname1", result.Name);
+            Assert.Null(result.Error);
         }
 
+        [Fact]
+        public void Process_MessageActionGetCpuByIp_CallsGetsCpuByIp()
+        {
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.GetCpuByIp,
+                Data = "cpuname1"
+            };
 
+            var cpuDetailResponse = new CpuDetailResponse
+            {
+                Description = "cpuname1",
+                IsConnected = true,
+                HasError = false,
+                IpAddress = "120.0.0.1",
+                Name = "cpuname1",
+                Error = null
+            };
 
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.GetCpuByIp(It.IsAny<string>())).Returns(cpuDetailResponse);
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
 
+            pviApplicationMock.Verify(p => p.GetCpuByIp(It.IsAny<string>()), Times.Once);
 
+            var result = JsonConvert.DeserializeObject<CpuDetailResponse>(response.Message);
 
+            Assert.NotNull(result);
+            Assert.IsType<CpuDetailResponse>(result);
+            Assert.Equal("cpuname1", result.Description);
+            Assert.True(result.IsConnected);
+            Assert.False(result.HasError);
+            Assert.Equal("120.0.0.1", result.IpAddress);
+            Assert.Equal("cpuname1", result.Name);
+            Assert.Null(result.Error);
+        }
+
+        [Fact]
+        public void Process_MessageActionAddCpu_CallsAddCpu()
+        {
+            var cpuInfo = new CpuInfo
+            {
+                Name = "cpu1",
+                Description = "cpu1",
+                IpAddress = "100.2.3.120",
+            };
+
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.AddCpu,
+                Data = JsonConvert.SerializeObject(cpuInfo)
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.AddCpu(It.IsAny<CpuInfo>()));
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.AddCpu(It.IsAny<CpuInfo>()), Times.Once);
+        }
+
+        [Fact]
+        public void Process_MessageActionUpdateCpu_CallsUpdateCpu()
+        {
+            var cpuInfo = new CpuInfo
+            {
+                Name = "cpu1",
+                Description = "cpu1",
+                IpAddress = "100.2.3.120",
+            };
+
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.UpdateCpu,
+                Data = JsonConvert.SerializeObject(cpuInfo)
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.UpdateCpu(It.IsAny<CpuInfo>()));
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.UpdateCpu(It.IsAny<CpuInfo>()), Times.Once);
+        }
     }
 }
