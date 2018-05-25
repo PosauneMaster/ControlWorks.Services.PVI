@@ -218,7 +218,6 @@ namespace UnitTestProject1
             Assert.Equal("Object reference not set to an instance of an object.", response.Errors[0].Error);
         }
 
-
         [Fact]
         public void Process_MessageActionGetCpuByName_CallsGetsCpuName()
         {
@@ -350,5 +349,113 @@ namespace UnitTestProject1
 
             pviApplicationMock.Verify(p => p.UpdateCpu(It.IsAny<CpuInfo>()), Times.Once);
         }
+
+        [Fact]
+        public void Process_MessageActionDeleteCpuByName_CallsDeleteCpuByName()
+        {
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.DeleteCpuByName,
+                Data = "cpuname"
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.DeleteCpuByName(It.IsAny<string>()));
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.DeleteCpuByName(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public void Process_MessageActionDeleteCpuByIp_CallsDeleteCpuByIP()
+        {
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.DeleteCpuByIp,
+                Data = "cpuname"
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.DeleteCpuByIp(It.IsAny<string>()));
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.DeleteCpuByIp(It.IsAny<string>()), Times.Once);
+        }
+
+
+        [Fact]
+        public void Process_MessageActionGetAllCpu_CallsGetsAllCpu()
+        {
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.GetCpuByIp,
+                Data = "cpuname1"
+            };
+
+            var cpuDetailResponse1 = new CpuDetailResponse
+            {
+                Description = "cpuname1",
+                IsConnected = true,
+                HasError = false,
+                IpAddress = "120.0.0.1",
+                Name = "cpuname1",
+                Error = null
+            };
+            var cpuDetailResponse2 = new CpuDetailResponse
+            {
+                Description = "cpuname2",
+                IsConnected = true,
+                HasError = false,
+                IpAddress = "120.0.0.2",
+                Name = "cpuname2",
+                Error = null
+            };
+            var cpuDetailResponse3 = new CpuDetailResponse
+            {
+                Description = "cpuname3",
+                IsConnected = true,
+                HasError = false,
+                IpAddress = "120.0.0.3",
+                Name = "cpuname3",
+                Error = null
+            };
+
+            var list = new List<CpuDetailResponse> {cpuDetailResponse1, cpuDetailResponse2, cpuDetailResponse3};
+
+            var cpuDetailResponseArray = JsonConvert.SerializeObject(list.ToArray());
+
+
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.ge()).Returns(cpuDetailResponseArray);
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.GetCpuByIp(It.IsAny<string>()), Times.Once);
+
+            var result = JsonConvert.DeserializeObject<CpuDetailResponse>(response.Message);
+
+            Assert.NotNull(result);
+            Assert.IsType<CpuDetailResponse>(result);
+            Assert.Equal("cpuname1", result.Description);
+            Assert.True(result.IsConnected);
+            Assert.False(result.HasError);
+            Assert.Equal("120.0.0.1", result.IpAddress);
+            Assert.Equal("cpuname1", result.Name);
+            Assert.Null(result.Error);
+        }
+
+
+
     }
 }

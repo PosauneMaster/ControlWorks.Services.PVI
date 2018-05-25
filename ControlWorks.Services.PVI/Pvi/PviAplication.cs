@@ -23,7 +23,7 @@ namespace ControlWorks.Services.PVI.Pvi
         CpuDetailResponse GetCpuByIp(string ip);
         void DeleteCpuByName(string name);
         void DeleteCpuByIp(string ip);
-        Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null);
+        CpuDetailResponse[] GetCpuData();
         Task AddVariables(string cpuName, IList<string> variableNames);
         Task RemoveVariables(string cpuName, IList<string> variableNames);
 
@@ -116,10 +116,9 @@ namespace ControlWorks.Services.PVI.Pvi
             _cpuManager.DisconnectCpuByIp(ip);
         }
 
-        public async Task<DataResponse> GetCpuDataAsync(string cpuName)
+        public CpuDetailResponse[] GetCpuData()
         {
-            var response =  await Task.Run(() => GetCpuData(cpuName));
-            return response;
+            _cpuManager.
         }
 
         public async Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null)

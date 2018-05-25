@@ -39,25 +39,6 @@ namespace ControlWorks.Services.Messaging
             _application = application;
         }
 
-        private ResponseMessage ProcessAction<T>(Action<T> action, Message message)
-        {
-            ResponseMessage response;
-
-            try
-            {
-                response = BuildResponse(message.Id, message.Action.ToString(), true);
-            }
-            catch (Exception e)
-            {
-                ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
-                response = BuildResponse(message.Id, message.Action.ToString(), false, errors);
-            }
-            return response;
-        }
-
-
-
-
         private ResponseMessage ProcessAction(Action action, Message message)
         {
             ResponseMessage response;
@@ -170,13 +151,14 @@ namespace ControlWorks.Services.Messaging
 
                 case MessageAction.DeleteCpuByName:
 
-                    Action<string> a = _application.DeleteCpuByName;
-
-                    return ProcessAction(a, message);
+                    Action<string> deleteByNameAction = _application.DeleteCpuByName;
+                    return ProcessAction(deleteByNameAction, message, message.Data);
 
                 case MessageAction.DeleteCpuByIp:
-                    _application.DeleteCpuByIp(message.Data);
-                    return new ResponseMessage() { Message = "DeleteCpuByIp", IsSuccess = true };
+
+                    Action<string> deleteByIpAction = _application.DeleteCpuByIp;
+                    return ProcessAction(deleteByIpAction, message, message.Data);
+
                 case MessageAction.GetAllCpuData:
                     var requestData = JsonConvert.DeserializeObject<VariableRequestMessage>(message.Data);
                     _application.GetCpuDataAsync(requestData.CpuName, requestData.VariableNames);

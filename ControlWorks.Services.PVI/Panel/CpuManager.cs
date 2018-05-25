@@ -13,7 +13,7 @@ namespace ControlWorks.Services.PVI.Panel
         void Add(CpuInfo info);
         void Update(CpuInfo info);
         List<string> GetCpuNames();
-
+        CpuDetailResponse[] GetCpus();
     }
 
     public class CpuManager : ICpuManager
@@ -76,6 +76,17 @@ namespace ControlWorks.Services.PVI.Panel
         {
             return _cpuWrapper.GetCpuNames();
         }
+
+        public CpuDetailResponse[] GetCpus()
+        {
+            var responseList = new List<CpuDetailResponse>();
+
+            GetCpuNames().ForEach(c =>
+            {
+               FindCpuByName()
+            });
+        }
+
 
         #endregion
 
