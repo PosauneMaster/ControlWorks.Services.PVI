@@ -12,8 +12,6 @@ namespace ControlWorks.Services.PVI.Impl
         void ConnectVariable(string cpuName, string name);
         List<Tuple<string, string>> ReadVariables(VariableInfo info);
         void DisconnectVariables(string cpuName, IEnumerable<string> variableNames);
-
-
     }
 
     public class VariableWrapper : IVariableWrapper

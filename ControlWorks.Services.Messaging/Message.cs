@@ -8,6 +8,9 @@ namespace ControlWorks.Services.Messaging
         public Type Type { get; set; }
         public MessageAction Action { get; set; }
         public string Data { get; set; }
+        public VariableRequestMessage VariableRequest { get; set; }
+
+
     }
 
     public class VariableRequestMessage

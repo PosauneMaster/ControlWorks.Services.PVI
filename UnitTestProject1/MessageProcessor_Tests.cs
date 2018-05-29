@@ -397,7 +397,7 @@ namespace UnitTestProject1
             var m = new Message
             {
                 Id = guid,
-                Action = MessageAction.GetCpuByIp,
+                Action = MessageAction.GetAllCpuData,
                 Data = "cpuname1"
             };
 
@@ -431,29 +431,93 @@ namespace UnitTestProject1
 
             var list = new List<CpuDetailResponse> {cpuDetailResponse1, cpuDetailResponse2, cpuDetailResponse3};
 
-            var cpuDetailResponseArray = JsonConvert.SerializeObject(list.ToArray());
-
-
-
             var message = JsonConvert.SerializeObject(m);
             Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
-            pviApplicationMock.Setup(p => p.ge()).Returns(cpuDetailResponseArray);
+            pviApplicationMock.Setup(p => p.GetCpuData()).Returns(list.ToArray());
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
 
-            pviApplicationMock.Verify(p => p.GetCpuByIp(It.IsAny<string>()), Times.Once);
+            pviApplicationMock.Verify(p => p.GetCpuData(), Times.Once);
 
-            var result = JsonConvert.DeserializeObject<CpuDetailResponse>(response.Message);
+            var result = JsonConvert.DeserializeObject<CpuDetailResponse[]>(response.Message);
 
             Assert.NotNull(result);
-            Assert.IsType<CpuDetailResponse>(result);
-            Assert.Equal("cpuname1", result.Description);
-            Assert.True(result.IsConnected);
-            Assert.False(result.HasError);
-            Assert.Equal("120.0.0.1", result.IpAddress);
-            Assert.Equal("cpuname1", result.Name);
-            Assert.Null(result.Error);
+            Assert.IsType<CpuDetailResponse[]>(result);
+            Assert.True(3 == result.Length);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                Assert.Equal(list[i].Description, result[i].Description);
+                Assert.Equal(list[i].IsConnected, result[i].IsConnected);
+                Assert.Equal(list[i].HasError, result[i].HasError);
+                Assert.Equal(list[i].IpAddress, result[i].IpAddress);
+                Assert.Equal(list[i].Name, result[i].Name);
+                Assert.Null(list[i].Error);
+            }
+
         }
+
+
+
+
+        [Fact]
+        public void Process_MessageActionReadVariables_CallsReadVariables()
+        {
+            var variableRequest = new VariableRequestMessage {CpuName = "cpu1", VariableNames = new string[] { "variable1", "variable2" } };
+
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.ReadVariables,
+                Data = "cpuname1",
+                VariableRequest = new VariableRequestMessage { CpuName = "cpu1", VariableNames = new[] { "variable1", "variable2", "variable3" } }
+            };
+
+            var requestList = new List<string> {"variable1", "variable1", "variable1"};
+
+            var list = new List<Tuple<string, string>>
+            {
+                new Tuple<string, string>("variable1", "value1"),
+                new Tuple<string, string>("variable2", "value2"),
+                new Tuple<string, string>("variable3", "value3")
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.ReadVariables(It.IsAny<string>(), It.IsAny<IList<string>>())).Returns(list);
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.ReadVariables(It.IsAny<string>(), It.IsAny<IList<string>>()), Times.Once);
+
+            var result = JsonConvert.DeserializeObject(response.Message);
+
+            Assert.NotNull(result);
+            //Assert.IsType<CpuDetailResponse[]>(result);
+            //Assert.True(3 == result.Length);
+
+            //for (int i = 0; i < list.Count; i++)
+            //{
+            //    Assert.Equal(list[i].Description, result[i].Description);
+            //    Assert.Equal(list[i].IsConnected, result[i].IsConnected);
+            //    Assert.Equal(list[i].HasError, result[i].HasError);
+            //    Assert.Equal(list[i].IpAddress, result[i].IpAddress);
+            //    Assert.Equal(list[i].Name, result[i].Name);
+            //    Assert.Null(list[i].Error);
+            //}
+
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

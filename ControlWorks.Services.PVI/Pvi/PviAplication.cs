@@ -1,4 +1,5 @@
-﻿using ControlWorks.Services.PVI.Impl;
+﻿using System;
+using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
@@ -24,10 +25,10 @@ namespace ControlWorks.Services.PVI.Pvi
         void DeleteCpuByName(string name);
         void DeleteCpuByIp(string ip);
         CpuDetailResponse[] GetCpuData();
-        Task AddVariables(string cpuName, IList<string> variableNames);
-        Task RemoveVariables(string cpuName, IList<string> variableNames);
-
-
+        void AddVariables(string cpuName, IList<string> variableNames);
+        void RemoveVariables(string cpuName, IList<string> variableNames);
+        List<Tuple<string, string>> ReadVariables(string cpuName, IList<string> variableNames);
+        List<Tuple<string, string>> ReadAllVariables(string cpuName);
     }
     public class PviAplication : IPviAplication
     {
@@ -118,89 +119,27 @@ namespace ControlWorks.Services.PVI.Pvi
 
         public CpuDetailResponse[] GetCpuData()
         {
-            _cpuManager.
+            return _cpuManager.GetCpus();
         }
 
-        public async Task<DataResponse> GetCpuDataAsync(string cpuName, IEnumerable<string> variableNames = null)
+        public List<Tuple<string, string>> ReadVariables(string cpuName, IList<string> variableNames)
         {
-            var response = await Task.Run(() => GetCpuData(cpuName, variableNames));
-            return response;
+            return _variableManager.GetVariables(cpuName, variableNames);
         }
 
-        private DataResponse GetCpuData(string cpuName, IEnumerable<string> variableNames = null)
+        public List<Tuple<string, string>> ReadAllVariables(string cpuName)
         {
-            var cpu = _cpuManager.FindCpuByName(cpuName);
-
-            if (cpu == null)
-            {
-                return new DataResponse()
-                {
-                    Name = cpuName,
-                    Data = null,
-                    Error = new ErrorResponse
-                    {
-                        Error = $"A Cpu with the name {cpuName} is not found"
-                    }
-                };
-            }
-
-            if (cpu.HasError)
-            {
-                return new DataResponse()
-                {
-                    Name = cpuName,
-                    Data = null,
-                    Error = new ErrorResponse
-                    {
-                        Error = $"A Cpu with the name {cpuName} is in an error state.  {cpu.Error.ErrorText}"
-                    }
-                };
-            }
-
-            var variableList = new List<string>();
-            if (variableNames != null)
-            {
-                variableList.AddRange(variableNames);
-            }
-
-            var responseList = variableList.Count == 0 ? _variableManager.GetAllVariables(cpuName) : _variableManager.GetVariables(cpuName, variableList);
-
-            if (responseList.Count == 0)
-            {
-                return new DataResponse()
-                {
-                    Name = cpuName,
-                    Data = null,
-                    Error = new ErrorResponse
-                    {
-                        Error = $"No variables found for {cpuName}"
-                    }
-                };
-            }
-            dynamic variables = new ExpandoObject();
-            var variableDict = (IDictionary<string, object>)variables;
-
-            foreach (var tuple in responseList)
-            {
-                variableDict.Add(tuple.Item1, tuple.Item2);
-            }
-
-            return new DataResponse
-            {
-                Name = cpuName,
-                Data = variableDict as ExpandoObject
-            };
+            return _variableManager.GetAllVariables(cpuName);
         }
 
-        public async Task AddVariables(string cpuName, IList<string> variableNames)
+        public void AddVariables(string cpuName, IList<string> variableNames)
         {
-            await Task.Run(() => _variableManager.AddVariables(cpuName, variableNames));
-
+            _variableManager.AddVariables(cpuName, variableNames);
         }
 
-        public async Task RemoveVariables(string cpuName, IList<string> variableNames)
+        public void RemoveVariables(string cpuName, IList<string> variableNames)
         {
-            await Task.Run(() => _variableManager.RemoveVariables(cpuName, variableNames));
+            _variableManager.RemoveVariables(cpuName, variableNames);
         }
 
         #endregion

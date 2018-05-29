@@ -81,12 +81,11 @@ namespace ControlWorks.Services.PVI.Panel
         {
             var responseList = new List<CpuDetailResponse>();
 
-            GetCpuNames().ForEach(c =>
-            {
-               FindCpuByName()
-            });
-        }
+            GetCpuNames().
+                ForEach(c => { responseList.Add(FindCpuByName(c)); });
 
+            return responseList.ToArray();
+        }
 
         #endregion
 

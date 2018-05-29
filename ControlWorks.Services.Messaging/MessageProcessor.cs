@@ -23,7 +23,9 @@ namespace ControlWorks.Services.Messaging
         GetCpuByIp,
         DeleteCpuByName,
         DeleteCpuByIp,
-        GetAllCpuData
+        GetAllCpuData,
+        ReadVariables,
+        ReadAllVariables
 
     }
     public class MessageProcessor
@@ -160,9 +162,43 @@ namespace ControlWorks.Services.Messaging
                     return ProcessAction(deleteByIpAction, message, message.Data);
 
                 case MessageAction.GetAllCpuData:
-                    var requestData = JsonConvert.DeserializeObject<VariableRequestMessage>(message.Data);
-                    _application.GetCpuDataAsync(requestData.CpuName, requestData.VariableNames);
-                    return new ResponseMessage() { Message = "GetAllCpuData", IsSuccess = true };
+
+                    ResponseMessage getAllCpuDataResponse;
+
+                    try
+                    {
+                        var result = _application.GetCpuData();
+
+                        getAllCpuDataResponse = BuildResponse(message.Id, JsonConvert.SerializeObject(result), true);
+
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
+                        getAllCpuDataResponse = BuildResponse(message.Id, message.Action.ToString(), false, errors);
+                    }
+                    return getAllCpuDataResponse;
+
+                case MessageAction.ReadVariables:
+
+                    ResponseMessage readVariablesRsponse;
+
+                    try
+                    {
+                        var variableResponse = _application.ReadVariables(message.VariableRequest.CpuName, message.VariableRequest.VariableNames);
+
+                        readVariablesRsponse = BuildResponse(message.Id, JsonConvert.SerializeObject(variableResponse), true);
+
+                    }
+                    catch (Exception e)
+                    {
+                        ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
+                        readVariablesRsponse = BuildResponse(message.Id, message.Action.ToString(), false, errors);
+                    }
+
+                    return readVariablesRsponse;
+
+
                 default:
                     ErrorResponse[] error = { new ErrorResponse() { Error = "Unknown message action" } };
                     return new ResponseMessage()
