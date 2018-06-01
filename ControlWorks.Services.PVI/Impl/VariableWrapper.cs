@@ -10,7 +10,7 @@ namespace ControlWorks.Services.PVI.Impl
     {
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
         void ConnectVariable(string cpuName, string name);
-        List<Tuple<string, string>> ReadVariables(VariableInfo info);
+        VariableResponse ReadVariables(VariableInfo info);
         void DisconnectVariables(string cpuName, IEnumerable<string> variableNames);
     }
 
@@ -25,9 +25,10 @@ namespace ControlWorks.Services.PVI.Impl
             _eventNotifier = eventNotifier;
         }
 
-        public List<Tuple<string, string>> ReadVariables(VariableInfo info)
+        public VariableResponse ReadVariables(VariableInfo info)
         {
-            var list = new List<Tuple<string, string>>();
+            var response = new VariableResponse(info.CpuName);
+
             if (_service.Cpus.ContainsKey(info.CpuName))
             {
                 var cpu = _service.Cpus[info.CpuName];
@@ -37,12 +38,12 @@ namespace ControlWorks.Services.PVI.Impl
                     if (cpu.Variables.ContainsKey(variable))
                     {
                         var value = ConvertVariableValue(cpu.Variables[variable].Value);
-                        list.Add(new Tuple<string, string>(variable, value));
+                        response.AddValue(variable, value);
                     }
                 }
             }
 
-            return list;
+            return response;
         }
 
         public void ConnectVariables(string cpuName, IEnumerable<string> variables)

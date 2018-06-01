@@ -27,8 +27,8 @@ namespace ControlWorks.Services.PVI.Pvi
         CpuDetailResponse[] GetCpuData();
         void AddVariables(string cpuName, IList<string> variableNames);
         void RemoveVariables(string cpuName, IList<string> variableNames);
-        List<Tuple<string, string>> ReadVariables(string cpuName, IList<string> variableNames);
-        List<Tuple<string, string>> ReadAllVariables(string cpuName);
+        VariableResponse ReadVariables(string cpuName, IList<string> variableNames);
+        VariableResponse ReadAllVariables(string cpuName);
     }
     public class PviAplication : IPviAplication
     {
@@ -122,12 +122,12 @@ namespace ControlWorks.Services.PVI.Pvi
             return _cpuManager.GetCpus();
         }
 
-        public List<Tuple<string, string>> ReadVariables(string cpuName, IList<string> variableNames)
+        public VariableResponse ReadVariables(string cpuName, IList<string> variableNames)
         {
             return _variableManager.GetVariables(cpuName, variableNames);
         }
 
-        public List<Tuple<string, string>> ReadAllVariables(string cpuName)
+        public VariableResponse ReadAllVariables(string cpuName)
         {
             return _variableManager.GetAllVariables(cpuName);
         }

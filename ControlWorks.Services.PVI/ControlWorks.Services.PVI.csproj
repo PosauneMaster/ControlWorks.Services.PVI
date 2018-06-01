@@ -72,6 +72,7 @@
     <Compile Include="Variables\VariableManager.cs" />
     <Compile Include="Variables\VariableCollection.cs" />
     <Compile Include="Variables\VariableDetailRespose.cs" />
+    <Compile Include="Variables\VariableResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

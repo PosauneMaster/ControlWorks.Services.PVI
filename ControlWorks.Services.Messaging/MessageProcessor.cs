@@ -25,7 +25,9 @@ namespace ControlWorks.Services.Messaging
         DeleteCpuByIp,
         GetAllCpuData,
         ReadVariables,
-        ReadAllVariables
+        ReadAllVariables,
+        AddVariables,
+        RemoveVariables
 
     }
     public class MessageProcessor
@@ -94,6 +96,29 @@ namespace ControlWorks.Services.Messaging
             }
             return response;
         }
+
+        private ResponseMessage ProcessAction<T1, T2>(Action<T1, T2> action, T message)
+        {
+            ResponseMessage response;
+
+            message.
+            try
+            {
+                action( data);
+                response = BuildResponse(message.Id, message.Action.ToString(), true);
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
+                response = BuildResponse(message.Id, message.Action.ToString(), false, errors);
+            }
+            return response;
+        }
+
+
+
+
 
         private ResponseMessage ProcessAction<T>(Func<string, T> action, Message message, string data)
         {
@@ -198,6 +223,11 @@ namespace ControlWorks.Services.Messaging
 
                     return readVariablesRsponse;
 
+                case MessageAction.ReadAllVariables:
+
+                    return ProcessAction(_application.ReadAllVariables, message, message.Data);
+
+                case MessageAction.AddVariables:
 
                 default:
                     ErrorResponse[] error = { new ErrorResponse() { Error = "Unknown message action" } };

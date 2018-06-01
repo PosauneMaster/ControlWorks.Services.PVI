@@ -10,8 +10,8 @@ namespace ControlWorks.Services.PVI.Variables
     public interface IVariableManager
     {
         void ConnectVariables(IList<string> cpuNames);
-        List<Tuple<string, string>> GetAllVariables(string cpuName);
-        List<Tuple<string, string>> GetVariables(string cpuName, IList<string> variableNames);
+        VariableResponse GetAllVariables(string cpuName);
+        VariableResponse GetVariables(string cpuName, IList<string> variableNames);
         void AddVariables(string cpuName, IList<string> variableNames);
         void RemoveVariables(string cpuName, IList<string> variableNames);
 
@@ -30,13 +30,13 @@ namespace ControlWorks.Services.PVI.Variables
             _variableInfoCollection = variableInfoCollection;
         }
 
-        public List<Tuple<string, string>> GetAllVariables(string cpuName)
+        public VariableResponse GetAllVariables(string cpuName)
         {
             var info = _variableInfoCollection.FindByCpu(cpuName);
             return _variableWrapper.ReadVariables(info);
         }
 
-        public List<Tuple<string, string>> GetVariables(string cpuName, IList<string> variableNames)
+        public VariableResponse GetVariables(string cpuName, IList<string> variableNames)
         {
             var info = _variableInfoCollection.FindByCpu(cpuName);
             info.Variables = variableNames.ToArray();

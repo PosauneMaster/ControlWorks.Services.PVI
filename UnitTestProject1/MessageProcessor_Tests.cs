@@ -8,6 +8,7 @@ using ControlWorks.Services.Messaging;
 using ControlWorks.Services.PVI;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Pvi;
+using ControlWorks.Services.PVI.Variables;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -43,6 +44,33 @@ namespace UnitTestProject1
             Assert.Null(response.Errors);
 
         }
+
+        [Fact]
+        public void Process_MessageActionStart_ThrowsException()
+        {
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.Start,
+                Data = String.Empty
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.Connect()).Throws();
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            pviApplicationMock.Verify(p => p.Connect(), Times.Once);
+
+            Assert.Equal(guid, response.Id);
+            Assert.Equal("Start", response.Message);
+            Assert.True(response.IsSuccess);
+            Assert.Null(response.Errors);
+
+        }
+
+
 
         [Fact]
         public void Process_MessageActionStart_ThrowsNullReferenceException()
@@ -457,69 +485,41 @@ namespace UnitTestProject1
 
         }
 
-
-
-
         [Fact]
-        public void Process_MessageActionReadVariables_CallsReadVariables()
+        public void Process_MessageActionReadAllVariables_CallsReadAllVariables()
         {
-            var variableRequest = new VariableRequestMessage {CpuName = "cpu1", VariableNames = new string[] { "variable1", "variable2" } };
-
             var m = new Message
             {
                 Id = guid,
-                Action = MessageAction.ReadVariables,
-                Data = "cpuname1",
-                VariableRequest = new VariableRequestMessage { CpuName = "cpu1", VariableNames = new[] { "variable1", "variable2", "variable3" } }
+                Action = MessageAction.ReadAllVariables,
+                Data = "cpu1"
             };
 
-            var requestList = new List<string> {"variable1", "variable1", "variable1"};
-
-            var list = new List<Tuple<string, string>>
-            {
-                new Tuple<string, string>("variable1", "value1"),
-                new Tuple<string, string>("variable2", "value2"),
-                new Tuple<string, string>("variable3", "value3")
-            };
+            var variableResponse = new VariableResponse("cpu1");
+            variableResponse.AddValue("variable1", "value1");
+            variableResponse.AddValue("variable2", "value2");
+            variableResponse.AddValue("variable3", "value3");
 
             var message = JsonConvert.SerializeObject(m);
             Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
-            pviApplicationMock.Setup(p => p.ReadVariables(It.IsAny<string>(), It.IsAny<IList<string>>())).Returns(list);
+            pviApplicationMock.Setup(p => p.ReadAllVariables(It.IsAny<string>())).Returns(variableResponse);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
 
-            pviApplicationMock.Verify(p => p.ReadVariables(It.IsAny<string>(), It.IsAny<IList<string>>()), Times.Once);
+            pviApplicationMock.Verify(p => p.ReadAllVariables(It.IsAny<string>()), Times.Once);
 
-            var result = JsonConvert.DeserializeObject(response.Message);
+            var result = JsonConvert.DeserializeObject< VariableResponse>(response.Message);
 
             Assert.NotNull(result);
-            //Assert.IsType<CpuDetailResponse[]>(result);
-            //Assert.True(3 == result.Length);
+            Assert.IsType< VariableResponse>(result);
+            Assert.True(3 == result.Values.Length);
 
-            //for (int i = 0; i < list.Count; i++)
-            //{
-            //    Assert.Equal(list[i].Description, result[i].Description);
-            //    Assert.Equal(list[i].IsConnected, result[i].IsConnected);
-            //    Assert.Equal(list[i].HasError, result[i].HasError);
-            //    Assert.Equal(list[i].IpAddress, result[i].IpAddress);
-            //    Assert.Equal(list[i].Name, result[i].Name);
-            //    Assert.Null(list[i].Error);
-            //}
+            for (int i = 0; i < variableResponse.Values.Length; i++)
+            {
+                Assert.Equal(variableResponse.Values[i].Name, result.Values[i].Name);
+                Assert.Equal(variableResponse.Values[i].Value, result.Values[i].Value);
+            }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
