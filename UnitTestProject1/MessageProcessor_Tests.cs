@@ -57,7 +57,7 @@ namespace UnitTestProject1
 
             var message = JsonConvert.SerializeObject(m);
             Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
-            pviApplicationMock.Setup(p => p.Connect()).Throws();
+            pviApplicationMock.Setup(p => p.Connect()).Throws(new Exception());
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
 
@@ -65,12 +65,10 @@ namespace UnitTestProject1
 
             Assert.Equal(guid, response.Id);
             Assert.Equal("Start", response.Message);
-            Assert.True(response.IsSuccess);
-            Assert.Null(response.Errors);
+            Assert.False(response.IsSuccess);
+            Assert.NotNull(response.Errors);
 
         }
-
-
 
         [Fact]
         public void Process_MessageActionStart_ThrowsNullReferenceException()
@@ -521,5 +519,43 @@ namespace UnitTestProject1
             }
 
         }
+
+        [Fact]
+        public void Process_MessageAction_ServiceDetails_CallsServiceDetails()
+        {
+            var dt = DateTime.Now;
+
+            var details = new ServiceDetail
+            {
+                Cpus = 4,
+                ConnectTime = dt,
+                IsConnected = true,
+                License = "1234abcde",
+                Name = "service1"
+            };
+
+            var m = new Message
+            {
+                Id = guid,
+                Action = MessageAction.ServiceDetails
+            };
+
+            var message = JsonConvert.SerializeObject(m);
+            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            pviApplicationMock.Setup(p => p.ServiceDetails()).Returns(details);
+            var proc = new MessageProcessor(pviApplicationMock.Object);
+            var response = proc.Process(message);
+
+            var result = JsonConvert.DeserializeObject<ServiceDetail>(response.Message);
+
+            Assert.NotNull(result);
+            Assert.IsType<ServiceDetail>(result);
+            Assert.Equal(result.Cpus, details.Cpus);
+            Assert.Equal(result.ConnectTime, details.ConnectTime);
+            Assert.Equal(result.IsConnected, details.IsConnected);
+            Assert.Equal(result.License, details.License);
+            Assert.Equal(result.Name, details.Name);
+        }
+
     }
 }

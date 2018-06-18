@@ -16,6 +16,7 @@ namespace ControlWorks.Services.PVI.Pvi
     {
         void Connect();
         void Disconnect();
+        ServiceDetail ServiceDetails();
         bool GetIsConnected();
         bool GetHasError();
         void AddCpu(CpuInfo info);
@@ -65,6 +66,11 @@ namespace ControlWorks.Services.PVI.Pvi
 
             _pviContext = new PviContext(_serviceWrapper);
             Application.Run(_pviContext);
+        }
+
+        public ServiceDetail ServiceDetails()
+        {
+            return _serviceWrapper.ServiceDetails();
         }
 
         public bool GetIsConnected()

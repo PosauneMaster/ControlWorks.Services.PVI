@@ -9,12 +9,15 @@ namespace ControlWorks.Services.PVI.Impl
         void ConnectPviService();
         bool IsConnected { get; }
         bool HasError { get; }
+        ServiceDetail ServiceDetails();
+
     }
 
     public class ServiceWrapper : IServiceWrapper
     {
         private Service _service;
         private readonly IEventNotifier _eventNotifier;
+        private DateTime _connectionTime;
 
         public bool IsConnected => _service.IsConnected;
         public bool HasError => _service.HasError;
@@ -25,12 +28,26 @@ namespace ControlWorks.Services.PVI.Impl
 
         public void ConnectPviService()
         {
+            _connectionTime = DateTime.Now;
             _service = new Service(Guid.NewGuid().ToString());
 
             _service.Connected += _service_Connected;
             _service.Disconnected += _service_Disconnected;
             _service.Error += _service_Error;
         }
+
+        public ServiceDetail ServiceDetails()
+        {
+            return new ServiceDetail()
+            {
+                Name = _service.Name,
+                IsConnected = _service.IsConnected,
+                Cpus = _service.Cpus.Count,
+                ConnectTime = _connectionTime,
+                License = _service.LicenceInfo.ToString()
+            };
+        }
+
 
         private void _service_Error(object sender, PviEventArgs e)
         {

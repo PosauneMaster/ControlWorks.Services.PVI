@@ -15,6 +15,7 @@ namespace ControlWorks.Services.Messaging
         Unknown,
         Start,
         Stop,
+        ServiceDetails,
         IsConnected,
         IsError,
         AddCpu,
@@ -60,6 +61,24 @@ namespace ControlWorks.Services.Messaging
             return response;
         }
 
+        private ResponseMessage ProcessAction<T>(Func<T> action, Message message)
+        {
+            ResponseMessage response;
+
+            try
+            {
+                var result = action();
+                response = BuildResponse(message.Id, JsonConvert.SerializeObject(result), true);
+            }
+            catch (Exception e)
+            {
+                ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
+                response = BuildResponse(message.Id, message.Action.ToString(), false, errors);
+            }
+            return response;
+        }
+
+
         private ResponseMessage ProcessAction(Func<bool> action, Message message, MessageAction messageAction)
         {
             ResponseMessage response;
@@ -97,28 +116,6 @@ namespace ControlWorks.Services.Messaging
             return response;
         }
 
-        private ResponseMessage ProcessAction<T1, T2>(Action<T1, T2> action, T message)
-        {
-            ResponseMessage response;
-
-            message.
-            try
-            {
-                action( data);
-                response = BuildResponse(message.Id, message.Action.ToString(), true);
-
-            }
-            catch (Exception e)
-            {
-                ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
-                response = BuildResponse(message.Id, message.Action.ToString(), false, errors);
-            }
-            return response;
-        }
-
-
-
-
 
         private ResponseMessage ProcessAction<T>(Func<string, T> action, Message message, string data)
         {
@@ -149,6 +146,10 @@ namespace ControlWorks.Services.Messaging
                 case MessageAction.Stop:
 
                     return ProcessAction(_application.Disconnect, message);
+
+                case MessageAction.ServiceDetails:
+
+                    return ProcessAction(_application.ServiceDetails, message); 
 
                 case MessageAction.IsConnected:
 
@@ -188,21 +189,7 @@ namespace ControlWorks.Services.Messaging
 
                 case MessageAction.GetAllCpuData:
 
-                    ResponseMessage getAllCpuDataResponse;
-
-                    try
-                    {
-                        var result = _application.GetCpuData();
-
-                        getAllCpuDataResponse = BuildResponse(message.Id, JsonConvert.SerializeObject(result), true);
-
-                    }
-                    catch (Exception e)
-                    {
-                        ErrorResponse[] errors = { new ErrorResponse() { Error = e.Message } };
-                        getAllCpuDataResponse = BuildResponse(message.Id, message.Action.ToString(), false, errors);
-                    }
-                    return getAllCpuDataResponse;
+                    return ProcessAction(_application.GetCpuData, message);
 
                 case MessageAction.ReadVariables:
 
@@ -227,7 +214,8 @@ namespace ControlWorks.Services.Messaging
 
                     return ProcessAction(_application.ReadAllVariables, message, message.Data);
 
-                case MessageAction.AddVariables:
+                //case MessageAction.AddVariables:
+                //    break;
 
                 default:
                     ErrorResponse[] error = { new ErrorResponse() { Error = "Unknown message action" } };
@@ -275,7 +263,6 @@ namespace ControlWorks.Services.Messaging
                 };
             }
 #endif
-
 
             return response.Result;
         }
