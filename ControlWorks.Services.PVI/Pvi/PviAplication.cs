@@ -1,14 +1,9 @@
-﻿using System;
-using ControlWorks.Services.PVI.Impl;
+﻿using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Task = System.Threading.Tasks.Task;
 
 namespace ControlWorks.Services.PVI.Pvi
 {

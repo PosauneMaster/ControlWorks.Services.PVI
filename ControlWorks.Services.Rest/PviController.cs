@@ -6,18 +6,21 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using log4net;
 
 namespace ControlWorks.Services.Rest
 {
     public class PviController : ApiController
     {
-        public async Task<IHttpActionResult> GetDetails()
+        private readonly ILog _log = LogManager.GetLogger("FileLogger");
+
+        public IHttpActionResult GetDetails() 
         {
             try
             {
-                var requestProcessor = WebApiApplication.Locator.GetInstance<IServiceProcessor>();
+                var processor = new ServiceProcessor();
 
-                var details = await requestProcessor.GetServiceDetails();
+                var details = processor.GetServiceDetails();
 
                 if (details == null)
                 {
@@ -30,7 +33,7 @@ namespace ControlWorks.Services.Rest
             catch (Exception ex)
             {
                 ex.Data.Add("PviController.Operation", "GetDetails");
-                WebApiApplication.Logger.Log(new LogEntry(LoggingEventType.Error, ex.Message, ex));
+                _log.Error(ex.Message, ex);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
             }
         }
