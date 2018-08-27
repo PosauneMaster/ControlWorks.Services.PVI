@@ -18,7 +18,7 @@ namespace ControlWorks.Services.Rest
         {
             try
             {
-                var processor = new ServiceProcessor();
+                var processor = new ServiceProcessor(null);
 
                 var details = processor.GetServiceDetails();
 

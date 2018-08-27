@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 using Topshelf;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
-namespace ControlWorks.Services.Rest
+namespace ControlWorks.Services
 {
     class Program
     {
         private static readonly ILog Log = LogManager.GetLogger("RestServiceLogger");
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Log.Info("Starting Service");
 

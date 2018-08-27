@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services.Rest", "ControlWorks.Services.Rest\ControlWorks.Services.Rest.csproj", "{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services", "ControlWorks.Services\ControlWorks.Services.csproj", "{74575C73-60AD-47FD-BAD0-B8166C9C1165}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74575C73-60AD-47FD-BAD0-B8166C9C1165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74575C73-60AD-47FD-BAD0-B8166C9C1165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74575C73-60AD-47FD-BAD0-B8166C9C1165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74575C73-60AD-47FD-BAD0-B8166C9C1165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

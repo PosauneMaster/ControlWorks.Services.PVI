@@ -15,5 +15,8 @@ namespace ControlWorks.Services.Rest
     public class MessageProcessor
     {
         public MessageProcessor()
+        {
+
+        }
     }
 }
