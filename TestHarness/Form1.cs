@@ -1,10 +1,9 @@
-﻿using ControlWorks.Services.PVI;
-using System;
+﻿using System;
 using System.Dynamic;
 using System.Windows.Forms;
-using ControlWorks.Services.ConfigurationProvider;
-using ControlWorks.Services.PVI.Panel;
+using ControlWorks.Common;
 using Newtonsoft.Json;
+
 
 namespace TestHarness
 {
@@ -77,7 +76,7 @@ namespace TestHarness
                 _collection.Save(txtSaveFilePath.Text);
             }
 
-            _collection.Save(AppSettings.CpuSettingsFile);
+            _collection.Save(ConfigurationProvider.CpuSettingsFile);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)

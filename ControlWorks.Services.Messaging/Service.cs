@@ -1,9 +1,9 @@
-﻿using ControlWorks.Services.ConfigurationProvider;
-using ControlWorks.Services.PVI.Pvi;
+﻿using ControlWorks.Services.PVI.Pvi;
 using NetMQ;
 using NetMQ.Sockets;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using ControlWorks.Common;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -20,7 +20,7 @@ namespace ControlWorks.Services.Messaging
         {
             var pviApplication = new PviAplication();
             _msgProc = new MessageProcessor(pviApplication);
-            Task.Factory.StartNew(() => ResponseServer(AppSettings.Port), TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(() => ResponseServer(ConfigurationProvider.Port), TaskCreationOptions.LongRunning);
         }
 
         private void ResponseServer(string port)

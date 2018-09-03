@@ -1,9 +1,9 @@
-﻿using ControlWorks.Services.ConfigurationProvider;
-using ControlWorks.Services.PVI.Impl;
+﻿using ControlWorks.Services.PVI.Impl;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ControlWorks.Common;
 
 namespace ControlWorks.Services.PVI.Variables
 {
@@ -45,7 +45,7 @@ namespace ControlWorks.Services.PVI.Variables
 
         public void ConnectVariables(IList<string> cpuNames)
         {
-            _variableInfoCollection.Open(AppSettings.VariableSettingsFile);
+            _variableInfoCollection.Open(ConfigurationProvider.VariableSettingsFile);
             foreach (var cpuName in cpuNames)
             {
                 var info = _variableInfoCollection.FindByCpu(cpuName);

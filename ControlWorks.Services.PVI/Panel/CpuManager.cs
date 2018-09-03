@@ -1,5 +1,6 @@
 ﻿using ControlWorks.Services.PVI.Impl;
 using System.Collections.Generic;
+using ControlWorks.Common;
 
 namespace ControlWorks.Services.PVI.Panel
 {
@@ -94,7 +95,7 @@ namespace ControlWorks.Services.PVI.Panel
         private CpuInfoCollection GetCpuSettings()
         {
             var collection = new CpuInfoCollection();
-            collection.Open(ConfigurationProvider.AppSettings.CpuSettingsFile);
+            collection.Open(ConfigurationProvider.CpuSettingsFile);
             return collection;
         }
 

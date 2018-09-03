@@ -1,9 +1,9 @@
 ﻿using BR.AN.PviServices;
-using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Panel;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using ControlWorks.Common;
 
 namespace ControlWorks.Services.PVI.Impl
 {
@@ -69,7 +69,7 @@ namespace ControlWorks.Services.PVI.Impl
             }
 
             cpu.Connection.DeviceType = DeviceType.TcpIp;
-            cpu.Connection.TcpIp.SourceStation = AppSettings.SourceStationId;
+            cpu.Connection.TcpIp.SourceStation = ConfigurationProvider.SourceStationId;
             cpu.Connection.TcpIp.DestinationIpAddress = cpuInfo.IpAddress;
 
             cpu.Connected += Cpu_Connected; ;

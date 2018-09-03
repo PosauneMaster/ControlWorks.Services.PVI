@@ -90,10 +90,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ControlWorks.Services.ConfigurationProvider\ControlWorks.Services.ConfigurationProvider.csproj">
-      <Project>{c9955c82-321f-427d-987e-c668009e3eaf}</Project>
-      <Name>ControlWorks.Services.ConfigurationProvider</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ControlWorks.Services.Messaging\ControlWorks.Services.Messaging.csproj">
       <Project>{134543ca-73c2-49c6-873a-f9dc025ef1a6}</Project>
       <Name>ControlWorks.Services.Messaging</Name>

@@ -5,6 +5,8 @@ using log4net;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+
 namespace ControlWorks.Services.PVI.Pvi
 {
     public interface IPviAplication

@@ -1,20 +1,24 @@
-﻿using Owin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Web.Http;
+using ControlWorks.Common;
+using ControlWorks.Services.PVI.Pvi;
 using log4net;
-using log4net.Repository.Hierarchy;
 using Microsoft.Owin.Hosting;
 using Newtonsoft.Json;
+using Owin;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace ControlWorks.Services.Rest
 {
     public class WebApiApplication
     {
         private static readonly ILog Log = LogManager.GetLogger("RestServiceLogger");
+
+        public static IPviAplication PviApp { get; private set; }
+
+        static WebApiApplication()
+        {
+            PviApp = new PviAplication();
+        }
 
         public void Configuration(IAppBuilder app)
         {

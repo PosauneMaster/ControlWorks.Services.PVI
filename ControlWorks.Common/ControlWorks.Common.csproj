@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{74575C73-60AD-47FD-BAD0-B8166C9C1165}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ControlWorks.Services</RootNamespace>
-    <AssemblyName>ControlWorks.Services</AssemblyName>
+    <ProjectGuid>{9720EB0F-048C-4444-ACE4-110CDCC89CC1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ControlWorks.Common</RootNamespace>
+    <AssemblyName>ControlWorks.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,39 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Host.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="ConfigurationProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="log4net">
       <Version>2.0.8</Version>
     </PackageReference>
-    <PackageReference Include="Topshelf">
-      <Version>4.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Unity">
-      <Version>5.8.11</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ControlWorks.Common\ControlWorks.Common.csproj">
-      <Project>{9720eb0f-048c-4444-ace4-110cdcc89cc1}</Project>
-      <Name>ControlWorks.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ControlWorks.Services.PVI\ControlWorks.Services.PVI.csproj">
-      <Project>{7d3392aa-92e4-4e0e-ac9c-7bc478c4bf5e}</Project>
-      <Name>ControlWorks.Services.PVI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ControlWorks.Services.Rest\ControlWorks.Services.Rest.csproj">
-      <Project>{f3cce0c7-669f-413c-897c-a60b3ccd5e6d}</Project>
-      <Name>ControlWorks.Services.Rest</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

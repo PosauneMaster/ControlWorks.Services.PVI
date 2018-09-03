@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BR.AN.PviServices;
-using ControlWorks.Services.ConfigurationProvider;
 
 //namespace ControlWorks.Services.PVI.Panel
 //{

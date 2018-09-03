@@ -108,26 +108,26 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ControlWorks.Services.ConfigurationProvider\ControlWorks.Services.ConfigurationProvider.csproj">
-      <Project>{c9955c82-321f-427d-987e-c668009e3eaf}</Project>
-      <Name>ControlWorks.Services.ConfigurationProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ControlWorks.Services.Messaging\ControlWorks.Services.Messaging.csproj">
-      <Project>{134543ca-73c2-49c6-873a-f9dc025ef1a6}</Project>
-      <Name>ControlWorks.Services.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ControlWorks.Services.Pvi\ControlWorks.Services.Pvi.csproj">
-      <Project>{be7afd30-1d56-4baa-8bef-7f4de8741796}</Project>
-      <Name>ControlWorks.Services.Pvi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="log4net">
       <Version>2.0.8</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ControlWorks.Common\ControlWorks.Common.csproj">
+      <Project>{9720eb0f-048c-4444-ace4-110cdcc89cc1}</Project>
+      <Name>ControlWorks.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControlWorks.Services.Messaging\ControlWorks.Services.Messaging.csproj">
+      <Project>{134543ca-73c2-49c6-873a-f9dc025ef1a6}</Project>
+      <Name>ControlWorks.Services.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControlWorks.Services.PVI\ControlWorks.Services.PVI.csproj">
+      <Project>{7d3392aa-92e4-4e0e-ac9c-7bc478c4bf5e}</Project>
+      <Name>ControlWorks.Services.PVI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

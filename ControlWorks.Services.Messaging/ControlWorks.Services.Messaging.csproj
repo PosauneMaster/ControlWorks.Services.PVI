@@ -57,9 +57,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ControlWorks.Services.ConfigurationProvider\ControlWorks.Services.ConfigurationProvider.csproj">
-      <Project>{c9955c82-321f-427d-987e-c668009e3eaf}</Project>
-      <Name>ControlWorks.Services.ConfigurationProvider</Name>
+    <ProjectReference Include="..\ControlWorks.Common\ControlWorks.Common.csproj">
+      <Project>{9720eb0f-048c-4444-ace4-110cdcc89cc1}</Project>
+      <Name>ControlWorks.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\ControlWorks.Services.PVI\ControlWorks.Services.PVI.csproj">
       <Project>{7d3392aa-92e4-4e0e-ac9c-7bc478c4bf5e}</Project>

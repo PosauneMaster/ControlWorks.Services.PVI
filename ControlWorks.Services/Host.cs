@@ -22,8 +22,9 @@ namespace ControlWorks.Services
 
             WebApiApplication.Start();
 
-            _application = new PviAplication();
-            _application.Connect();
+            var pviApp = WebApiApplication.PviApp;
+            var factory = new TaskFactory();
+            factory.StartNew(() => pviApp.Connect(), TaskCreationOptions.LongRunning);
         }
 
         public void Stop()

@@ -1,5 +1,4 @@
-﻿using ControlWorks.Services.ConfigurationProvider;
-using ControlWorks.Services.PVI;
+﻿using ControlWorks.Services.PVI;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Pvi;
 using Newtonsoft.Json;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading.Tasks;
+using ControlWorks.Common;
 
 namespace ControlWorks.Services.Messaging
 {
@@ -246,7 +246,7 @@ namespace ControlWorks.Services.Messaging
             var message = JsonConvert.DeserializeObject<Message>(msg);
 
             var response = Task.Run(() => Process(message));
-            var ts = TimeSpan.FromMilliseconds(AppSettings.MessageTimeout);
+            var ts = TimeSpan.FromMilliseconds(ConfigurationProvider.MessageTimeout);
 
 #if !DEBUG
             

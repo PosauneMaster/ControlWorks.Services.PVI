@@ -1,7 +1,6 @@
 ﻿using ControlWorks.Services.PVI;
 using System;
 using System.Windows.Forms;
-using ControlWorks.Services.ConfigurationProvider;
 using ControlWorks.Services.PVI.Variables;
 
 namespace TestHarness

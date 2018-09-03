@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ControlWorks.Services.PVI</RootNamespace>
     <AssemblyName>ControlWorks.Services.PVI</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -88,11 +88,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ControlWorks.Services.ConfigurationProvider\ControlWorks.Services.ConfigurationProvider.csproj">
-      <Project>{c9955c82-321f-427d-987e-c668009e3eaf}</Project>
-      <Name>ControlWorks.Services.ConfigurationProvider</Name>
+    <ProjectReference Include="..\ControlWorks.Common\ControlWorks.Common.csproj">
+      <Project>{9720eb0f-048c-4444-ace4-110cdcc89cc1}</Project>
+      <Name>ControlWorks.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
