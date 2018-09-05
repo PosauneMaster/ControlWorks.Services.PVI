@@ -175,32 +175,26 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void _eventNotifier_VariableError(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void _eventNotifier_VariableConnected(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void _eventNotifier_CpuError(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void _eventNotifier_CpuDisconnected(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
         private void _eventNotifier_CpuConnected(object sender, PviApplicationEventArgs e)
         {
-            throw new System.NotImplementedException();
         }
 
     }

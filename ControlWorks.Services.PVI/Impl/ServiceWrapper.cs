@@ -1,6 +1,7 @@
 ﻿using System;
 using BR.AN.PviServices;
 using ControlWorks.Services.PVI.Panel;
+using ControlWorks.Services.PVI.Variables;
 
 namespace ControlWorks.Services.PVI.Impl
 {
@@ -34,6 +35,8 @@ namespace ControlWorks.Services.PVI.Impl
             _service.Connected += _service_Connected;
             _service.Disconnected += _service_Disconnected;
             _service.Error += _service_Error;
+
+            _service.Connect();
         }
 
         public ServiceDetail ServiceDetails()
@@ -75,16 +78,20 @@ namespace ControlWorks.Services.PVI.Impl
             var fw = new FileWrapper();
             var cpuManager = new CpuManager(cpuWrapper);
 
+            var variableInfo = new VariableInfoCollection(fw);
+
+            var variableManager = new VariableManager(variableWrapper, variableInfo);
+
             var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper._service_Connected; ServiceName={serviceName}", e);
             _eventNotifier.OnPviServiceConnected(sender, new PviApplicationEventArgs()
             {
                 Message = pviEventMsg,
                 ServiceWrapper = this,
+                CpuManager = cpuManager,
                 CpuWrapper = cpuWrapper,
-                VariableWrapper = variableWrapper,
-                CpuManager = cpuManager
+                VariableManager = variableManager,
+                VariableWrapper = variableWrapper
             });
         }
-
     }
 }

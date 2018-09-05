@@ -26,7 +26,7 @@ namespace ControlWorks.Services.PVI.Variables
         public string CpuName { get; set; }
         public string[] Variables { get; set; }
     }
-    public class VariableInfoCollection
+    public class VariableInfoCollection : IVariableInfoCollection
     {
         private const string VariableMaster = "VARIABLE_MASTER";
 

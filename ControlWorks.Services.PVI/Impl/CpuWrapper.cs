@@ -46,7 +46,7 @@ namespace ControlWorks.Services.PVI.Impl
         public List<string> GetCpuNames()
         {
             var list = new List<string>();
-            foreach (Cpu cpu in _service.Cpus)
+            foreach (Cpu cpu in _service.Cpus.Values)
             {
                 list.Add(cpu.Name);
             }

@@ -129,10 +129,10 @@ namespace ControlWorks.Services.PVI
     {
         public IPviManager PviManager { get; set; }
         public ICpuManager CpuManager { get; set; }
-        public IVariableManager VariableManager { get; set; }
-        public IServiceWrapper ServiceWrapper { get; set; }
         public ICpuWrapper CpuWrapper { get; set; }
+        public IVariableManager VariableManager { get; set; }
         public IVariableWrapper VariableWrapper { get; set; }
+        public IServiceWrapper ServiceWrapper { get; set; }
         public string Message { get; set; }
     }
 }
