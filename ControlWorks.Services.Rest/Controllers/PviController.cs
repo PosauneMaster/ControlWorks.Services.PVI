@@ -12,15 +12,16 @@ namespace ControlWorks.Services.Rest
 {
     public class PviController : ApiController
     {
-        private readonly ILog _log = LogManager.GetLogger("FileLogger");
+        private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
 
-        public IHttpActionResult GetDetails() 
+        public async Task<IHttpActionResult> GetDetails()
         {
             try
             {
-                var processor = new ServiceProcessor(null);
+                
+                var processor = new ServiceProcessor(WebApiApplication.PviApp);
 
-                var details = processor.GetServiceDetails();
+                var details = await processor.GetServiceDetails();
 
                 if (details == null)
                 {

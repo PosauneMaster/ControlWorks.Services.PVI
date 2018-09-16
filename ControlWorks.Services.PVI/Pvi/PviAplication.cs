@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ControlWorks.Services.PVI.Pvi
 {
-    public interface IPviAplication
+    public interface IPviApplication
     {
         void Connect();
         void Disconnect();
@@ -27,10 +27,11 @@ namespace ControlWorks.Services.PVI.Pvi
         void RemoveVariables(string cpuName, IList<string> variableNames);
         VariableResponse ReadVariables(string cpuName, IList<string> variableNames);
         VariableResponse ReadAllVariables(string cpuName);
+
     }
-    public class PviAplication : IPviAplication
+    public class PviAplication : IPviApplication
     {
-        private readonly ILog _log = LogManager.GetLogger("FileLogger");
+        private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
 
         private PviContext _pviContext;
         private ICpuManager _cpuManager;
@@ -175,14 +176,18 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)
         {
+            _log.Info(e.Message);
         }
 
         private void _eventNotifier_VariableError(object sender, PviApplicationEventArgs e)
         {
+            _log.Info(e.Message);
         }
 
         private void _eventNotifier_VariableConnected(object sender, PviApplicationEventArgs e)
         {
+            _log.Info(e.Message);
+
         }
 
         private void _eventNotifier_CpuError(object sender, PviApplicationEventArgs e)
@@ -195,6 +200,7 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_CpuConnected(object sender, PviApplicationEventArgs e)
         {
+            _log.Info($"PviApplication, CpuConnected={e.Message}");
         }
 
     }

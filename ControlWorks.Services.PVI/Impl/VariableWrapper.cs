@@ -153,13 +153,45 @@ namespace ControlWorks.Services.PVI.Impl
 
         private void Variable_Error(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Variable_Error", e);
+            var cpuName = String.Empty;
+            var cpuIp = String.Empty;
+
+            var v = sender as Variable;
+            if (v != null)
+            {
+                var c = v.Parent as Cpu;
+
+                if (c != null)
+                {
+                    cpuName = c.Name;
+                    cpuIp = c.Connection.TcpIp.DestinationIpAddress;
+                }
+
+            }
+
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper.Variable_Error Cpu Name={cpuName}, cpuIp={cpuIp} ", e);
             _eventNotifier.OnVariableError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Variable_Connected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Variable_Connected", e);
+            var cpuName = String.Empty;
+            var cpuIp = String.Empty;
+
+            var v = sender as Variable;
+            if (v != null)
+            {
+                var c = v.Parent as Cpu;
+
+                if (c != null)
+                {
+                    cpuName = c.Name;
+                    cpuIp = c.Connection.TcpIp.DestinationIpAddress;
+                }
+
+            }
+
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper.Variable_Connected Cpu Name={cpuName}, cpuIp={cpuIp} ", e);
             _eventNotifier.OnVariableConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 

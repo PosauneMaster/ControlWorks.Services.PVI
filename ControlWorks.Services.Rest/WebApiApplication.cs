@@ -11,9 +11,9 @@ namespace ControlWorks.Services.Rest
 {
     public class WebApiApplication
     {
-        private static readonly ILog Log = LogManager.GetLogger("RestServiceLogger");
+        private static readonly ILog Log = LogManager.GetLogger("ControlWorksLogger");
 
-        public static IPviAplication PviApp { get; private set; }
+        public static IPviApplication PviApp { get; private set; }
 
         static WebApiApplication()
         {

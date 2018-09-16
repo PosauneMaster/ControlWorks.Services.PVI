@@ -93,6 +93,9 @@ namespace ControlWorks.Services.PVI.Impl
                         _disconnectWaitHandle.WaitOne(1000);
                     }
                 }
+
+                _service.Cpus.Remove(cpu);
+
             }
         }
 
@@ -145,7 +148,7 @@ namespace ControlWorks.Services.PVI.Impl
 
         public CpuDetailResponse GetCpuByName(CpuInfo info)
         {
-            if (_service.Cpus.ContainsKey(info.Name))
+            if (info != null && _service.Cpus.ContainsKey(info.Name))
             {
                 return Map(info, _service.Cpus[info.Name]);
             }

@@ -12,7 +12,7 @@ namespace ControlWorks.Services.PVI.Panel
         CpuDetailResponse FindCpuByName(string name);
         CpuDetailResponse FindCpuByIp(string ip);
         void Add(CpuInfo info);
-        void Update(CpuInfo info);
+        bool Update(CpuInfo info);
         List<string> GetCpuNames();
         CpuDetailResponse[] GetCpus();
     }
@@ -37,17 +37,21 @@ namespace ControlWorks.Services.PVI.Panel
         public void DisconnectCpuByName(string name)
         {
             var info = FindByName(name);
-            GetCpuSettings()
-                .Remove(info);
-            _cpuWrapper.DisconnectCpu(info);
+            Disconnect(info);
         }
 
         public void DisconnectCpuByIp(string ip)
         {
             var info = FindByIp(ip);
-            GetCpuSettings()
-                .Remove(info);
-            _cpuWrapper.DisconnectCpu(FindByIp(ip));
+            Disconnect(info);
+        }
+
+        private void Disconnect(CpuInfo info)
+        {
+            var settings = GetCpuSettings();
+            settings.Remove(info);
+            _cpuWrapper.DisconnectCpu(info);
+            settings.Save(ConfigurationProvider.CpuSettingsFile);
         }
 
         public CpuDetailResponse FindCpuByName(string name)
@@ -65,12 +69,12 @@ namespace ControlWorks.Services.PVI.Panel
             Update(info);
         }
 
-        public void Update(CpuInfo info)
+        public bool Update(CpuInfo info)
         {
-            GetCpuSettings()
-                .AddOrUpdate(info);
-
+            var settings = GetCpuSettings();
+            settings.AddOrUpdate(info);
             _cpuWrapper.CreateCpu(info);
+            return settings.Save(ConfigurationProvider.CpuSettingsFile);
         }
 
         public List<string> GetCpuNames()

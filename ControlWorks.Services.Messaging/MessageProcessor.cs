@@ -33,13 +33,13 @@ namespace ControlWorks.Services.Messaging
     }
     public class MessageProcessor
     {
-        private readonly IPviAplication _application;
+        private readonly IPviApplication _application;
 
         public MessageProcessor()
         {
         }
 
-        public MessageProcessor(IPviAplication application)
+        public MessageProcessor(IPviApplication application)
         {
             _application = application;
         }

@@ -18,8 +18,6 @@ namespace ControlWorks.Services.PVI.Variables
     }
     public class VariableManager : IVariableManager
     {
-        private readonly ILog _log = LogManager.GetLogger("FileLogger");
-
         private readonly IVariableWrapper _variableWrapper;
         private readonly IVariableInfoCollection _variableInfoCollection;
 
@@ -49,7 +47,10 @@ namespace ControlWorks.Services.PVI.Variables
             foreach (var cpuName in cpuNames)
             {
                 var info = _variableInfoCollection.FindByCpu(cpuName);
-                _variableWrapper.ConnectVariables(info.CpuName, info.Variables);
+                if (info != null)
+                {
+                    _variableWrapper.ConnectVariables(info.CpuName, info.Variables);
+                }
             }
         }
 

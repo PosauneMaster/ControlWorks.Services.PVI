@@ -31,7 +31,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.Connect()).Verifiable();
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response =  proc.Process(message);   
@@ -56,7 +56,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.Connect()).Throws(new Exception());
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -81,7 +81,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.Connect()).Throws<NullReferenceException>();
             var proc = new MessageProcessor(pviApplicationMock.Object);
 
@@ -104,7 +104,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.Disconnect()).Verifiable();
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -129,7 +129,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.Disconnect()).Throws<NullReferenceException>();
             var proc = new MessageProcessor(pviApplicationMock.Object);
 
@@ -151,7 +151,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetIsConnected()).Returns(true);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -181,7 +181,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetIsConnected()).Throws<NullReferenceException>();
             var proc = new MessageProcessor(pviApplicationMock.Object);
 
@@ -203,7 +203,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetHasError()).Returns(true);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -233,7 +233,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetHasError()).Throws<NullReferenceException>();
             var proc = new MessageProcessor(pviApplicationMock.Object);
 
@@ -265,7 +265,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetCpuByName(It.IsAny<string>())).Returns(cpuDetailResponse);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -305,7 +305,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetCpuByIp(It.IsAny<string>())).Returns(cpuDetailResponse);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -342,7 +342,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.AddCpu(It.IsAny<CpuInfo>()));
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -368,7 +368,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.UpdateCpu(It.IsAny<CpuInfo>()));
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -388,7 +388,7 @@ namespace UnitTestProject1
 
             var message = JsonConvert.SerializeObject(m);
 
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.DeleteCpuByName(It.IsAny<string>()));
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -408,7 +408,7 @@ namespace UnitTestProject1
 
             var message = JsonConvert.SerializeObject(m);
 
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.DeleteCpuByIp(It.IsAny<string>()));
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -458,7 +458,7 @@ namespace UnitTestProject1
             var list = new List<CpuDetailResponse> {cpuDetailResponse1, cpuDetailResponse2, cpuDetailResponse3};
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.GetCpuData()).Returns(list.ToArray());
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -499,7 +499,7 @@ namespace UnitTestProject1
             variableResponse.AddValue("variable3", "value3");
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.ReadAllVariables(It.IsAny<string>())).Returns(variableResponse);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
@@ -541,7 +541,7 @@ namespace UnitTestProject1
             };
 
             var message = JsonConvert.SerializeObject(m);
-            Mock<IPviAplication> pviApplicationMock = new Mock<IPviAplication>();
+            Mock<IPviApplication> pviApplicationMock = new Mock<IPviApplication>();
             pviApplicationMock.Setup(p => p.ServiceDetails()).Returns(details);
             var proc = new MessageProcessor(pviApplicationMock.Object);
             var response = proc.Process(message);
