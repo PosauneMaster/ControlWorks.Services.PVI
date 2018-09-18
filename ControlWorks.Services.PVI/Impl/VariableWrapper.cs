@@ -67,16 +67,19 @@ namespace ControlWorks.Services.PVI.Impl
 
         private string ConvertVariableValue(Value v)
         {
+            string value = String.Empty;
+
             if (v == null)
             {
-                return String.Empty;
+                value = String.Empty;
             }
 
             switch (v.DataType)
             {
 
                 case DataType.Boolean:
-                    return v.ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+                    value = v.ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+                    break;
 
                 case DataType.SByte:
                 case DataType.Int16:
@@ -90,24 +93,31 @@ namespace ControlWorks.Services.PVI.Impl
                 case DataType.WORD:
                 case DataType.DWORD:
                 case DataType.UInt8:
-                    return v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                    value = v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                    break;
 
                 case DataType.Double:
-                    return v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                    value = v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                    break;
 
                 case DataType.DateTime:
                 case DataType.Date:
                 case DataType.DT:
-                    return v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
+                    value = v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
+                    break;
+                default:
+                    value = String.Empty;
+                    break;
             }
 
-            return v.ToString(CultureInfo.CurrentCulture);
+            return value == null ? String.Empty : value;
 
         }
 
         private void ConnectVariable(Cpu cpu, string name)
         {
-            if (!cpu.Variables.ContainsKey(name))
+
+            if (!cpu.Variables.ContainsKey(name) && !String.IsNullOrEmpty(name))
             {
                 var variable = new Variable(cpu, name)
                 {

@@ -24,6 +24,8 @@ namespace ControlWorks.Services.Rest.Processors
     }
     public class RequestProcessor : BaseProcessor, IRequestProcessor
     {
+
+
         private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
 
         private IPviApplication _application;

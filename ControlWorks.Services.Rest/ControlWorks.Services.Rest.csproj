@@ -47,11 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CpuController.cs" />
+    <Compile Include="Controllers\VariableController.cs" />
     <Compile Include="Processors\BaseProcessor.cs" />
     <Compile Include="EventNotifier.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Processors\MessageProcessor.cs" />
     <Compile Include="Processors\RequestProcessor.cs" />
+    <Compile Include="Processors\VariableProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\PviController.cs" />
     <Compile Include="Processors\ServiceProcessor.cs" />
