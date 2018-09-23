@@ -39,5 +39,30 @@ namespace ControlWorks.Services.Rest.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAciveByCpu(string id)
+        {
+            try
+            {
+                var variableProcessor = new VariableProcessor(WebApiApplication.PviApp);
+
+                var settings = await variableProcessor.FindActiveByCpuName(id);
+
+                if (settings == null)
+                {
+                    var message = "Variables not found";
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                }
+                return Ok(settings);
+            }
+            catch (Exception ex)
+            {
+                ex.Data.Add("VariableController.Operation", "GetVariables");
+                _log.Error(ex.Message, ex);
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
+            }
+        }
+
+
     }
 }

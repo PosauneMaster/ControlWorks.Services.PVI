@@ -14,6 +14,7 @@ namespace ControlWorks.Services.Rest.Processors
     {
         Task<List<VariableDetailRespose>> GetAll();
         Task<VariableResponse> FindByCpuName(string name);
+        Task<VariableResponse> FindActiveByCpuName(string name);
         Task Add(string cpuName, IEnumerable<string> variables);
         Task Remove(string cpuName, IEnumerable<string> variables);
         Task<VariableDetailRespose> Copy(string source, string destination);
@@ -62,6 +63,11 @@ namespace ControlWorks.Services.Rest.Processors
         {
             var result = Task.Run(() => _application.ReadAllVariables(name));
             return result;
+        }
+
+        public Task<VariableResponse> FindActiveByCpuName(string name)
+        {
+            return Task.Run(() => _application.ReadActiveVariables(name));
         }
 
         public Task<List<VariableDetailRespose>> GetAll()

@@ -94,6 +94,7 @@ namespace ControlWorks.Services.PVI.Variables
             return GetAll().FirstOrDefault(v => v.CpuName == name);
         }
 
+
         public void AddRange(string cpuName, IEnumerable<string> variableNames)
         {
             var list = new List<string>(variableNames);

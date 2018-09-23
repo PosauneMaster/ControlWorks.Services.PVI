@@ -11,6 +11,7 @@ namespace ControlWorks.Services.PVI.Impl
         void ConnectVariables(string cpuName, IEnumerable<string> variables);
         void ConnectVariable(string cpuName, string name);
         VariableResponse ReadVariables(VariableInfo info);
+        VariableResponse ReadActiveVariables(VariableInfo info);
         void DisconnectVariables(string cpuName, IEnumerable<string> variableNames);
     }
 
@@ -39,6 +40,30 @@ namespace ControlWorks.Services.PVI.Impl
                     {
                         var value = ConvertVariableValue(cpu.Variables[variable].Value);
                         response.AddValue(variable, value);
+                    }
+                }
+            }
+
+            return response;
+        }
+
+        public VariableResponse ReadActiveVariables(VariableInfo info)
+        {
+            var response = new VariableResponse(info.CpuName);
+
+            if (_service.Cpus.ContainsKey(info.CpuName))
+            {
+                var cpu = _service.Cpus[info.CpuName];
+
+                foreach (var variable in info.Variables)
+                {
+                    if (cpu.Variables.ContainsKey(variable))
+                    {
+                        if (cpu.Variables[variable].IsConnected)
+                        {
+                            var value = ConvertVariableValue(cpu.Variables[variable].Value);
+                            response.AddValue(variable, value);
+                        }
                     }
                 }
             }

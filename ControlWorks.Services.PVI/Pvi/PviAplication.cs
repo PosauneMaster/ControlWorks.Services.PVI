@@ -27,6 +27,7 @@ namespace ControlWorks.Services.PVI.Pvi
         void RemoveVariables(string cpuName, IList<string> variableNames);
         VariableResponse ReadVariables(string cpuName, IList<string> variableNames);
         VariableResponse ReadAllVariables(string cpuName);
+        VariableResponse ReadActiveVariables(string cpuName);
 
     }
     public class PviAplication : IPviApplication
@@ -134,6 +135,11 @@ namespace ControlWorks.Services.PVI.Pvi
         public VariableResponse ReadAllVariables(string cpuName)
         {
             return _variableManager.GetAllVariables(cpuName);
+        }
+
+        public VariableResponse ReadActiveVariables(string cpuName)
+        {
+            return _variableManager.GetActiveVariables(cpuName);
         }
 
         public void AddVariables(string cpuName, IList<string> variableNames)
