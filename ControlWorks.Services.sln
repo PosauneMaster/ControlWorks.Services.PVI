@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services.PVI", "ControlWorks.Services.PVI\ControlWorks.Services.PVI.csproj", "{7D3392AA-92E4-4E0E-AC9C-7BC478C4BF5E}"
 EndProject
@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{CDFBBB4D-3A8
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services.Messaging", "ControlWorks.Services.Messaging\ControlWorks.Services.Messaging.csproj", "{134543CA-73C2-49C6-873A-F9DC025EF1A6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{934C6F80-0CBB-4137-B4B8-C9BDA4CF0F66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services.Rest", "ControlWorks.Services.Rest\ControlWorks.Services.Rest.csproj", "{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}"
 EndProject
@@ -34,10 +32,6 @@ Global
 		{134543CA-73C2-49C6-873A-F9DC025EF1A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{134543CA-73C2-49C6-873A-F9DC025EF1A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{134543CA-73C2-49C6-873A-F9DC025EF1A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{934C6F80-0CBB-4137-B4B8-C9BDA4CF0F66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{934C6F80-0CBB-4137-B4B8-C9BDA4CF0F66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{934C6F80-0CBB-4137-B4B8-C9BDA4CF0F66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{934C6F80-0CBB-4137-B4B8-C9BDA4CF0F66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3CCE0C7-669F-413C-897C-A60B3CCD5E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
