@@ -101,33 +101,47 @@ namespace ControlWorks.Services.PVI.Impl
 
         private void Cpu_Disconnected(object sender, PviEventArgs e)
         {
+            String ipAddress = String.Empty;
+
             if (sender is Cpu cpu)
             {
                 if (_service.Cpus.ContainsKey(cpu.Name))
                 {
+                    ipAddress = cpu.Connection.TcpIp.DestinationIpAddress;
                     _service.Cpus.Remove(cpu.Name);
                 }
             }
 
-            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Disconnected", e);
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper.Cpu_Disconnected. IpAddress={ipAddress}", e);
             _eventNotifier.OnCpuDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Cpu_Error(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Error", e);
+            String ipAddress = String.Empty;
+
+            if (sender is Cpu cpu)
+            {
+                ipAddress = cpu.Connection.TcpIp.DestinationIpAddress;
+            }
+
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper.Cpu_Error. IpAddress={ipAddress} ", e);
             _eventNotifier.OnCpuError(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
         }
 
         private void Cpu_Connected(object sender, PviEventArgs e)
         {
-            var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper.Cpu_Connected", e);
-            _eventNotifier.OnCpuConnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
+            String ipAddress = String.Empty;
 
-            if (_service.Cpus.Count == _initialCount)
+            Cpu cpu = sender as Cpu;
+
+            if (sender != null)
             {
-                _eventNotifier.OnCpuManangerInitialized(this, new EventArgs());
+                ipAddress = cpu.Connection.TcpIp.DestinationIpAddress;
             }
+
+            var pviEventMsg = Utils.FormatPviEventMessage($"ServiceWrapper.Cpu_Connected. IpAddress={ipAddress}", e);
+            _eventNotifier.OnCpuConnected(sender, new CpuConnectionArgs(cpu, pviEventMsg));
         }
 
         public List<CpuDetailResponse> GetAllCpus(IEnumerable<CpuInfo> cpuInfo)

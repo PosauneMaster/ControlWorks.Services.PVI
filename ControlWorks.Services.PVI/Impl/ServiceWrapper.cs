@@ -17,6 +17,7 @@ namespace ControlWorks.Services.PVI.Impl
     public class ServiceWrapper : IServiceWrapper
     {
         private Service _service;
+        private PollingService _pollingService;
         private readonly IEventNotifier _eventNotifier;
         private DateTime _connectionTime;
 
@@ -62,6 +63,7 @@ namespace ControlWorks.Services.PVI.Impl
         {
             var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper._service_Disconnected", e);
             _eventNotifier.OnPviServiceDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
+            _pollingService.Stop();
         }
 
         private void _service_Connected(object sender, PviEventArgs e)
@@ -92,6 +94,9 @@ namespace ControlWorks.Services.PVI.Impl
                 VariableManager = variableManager,
                 VariableWrapper = variableWrapper
             });
+
+            _pollingService = new PollingService(_service);
+            _pollingService.Start();
         }
     }
 }

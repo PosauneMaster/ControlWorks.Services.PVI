@@ -10,6 +10,7 @@ namespace ControlWorks.Services.PVI.Variables
     public interface IVariableManager
     {
         void ConnectVariables(IList<string> cpuNames);
+        void ConnectVariable(string cpuName);
         VariableResponse GetAllVariables(string cpuName);
         VariableResponse GetVariables(string cpuName, IList<string> variableNames);
         VariableResponse GetActiveVariables(string cpuName);
@@ -27,6 +28,7 @@ namespace ControlWorks.Services.PVI.Variables
         {
             _variableWrapper = variableWrapper;
             _variableInfoCollection = variableInfoCollection;
+            _variableInfoCollection.Open(ConfigurationProvider.VariableSettingsFile);
         }
 
         public VariableResponse GetAllVariables(string cpuName)
@@ -51,14 +53,18 @@ namespace ControlWorks.Services.PVI.Variables
 
         public void ConnectVariables(IList<string> cpuNames)
         {
-            _variableInfoCollection.Open(ConfigurationProvider.VariableSettingsFile);
             foreach (var cpuName in cpuNames)
             {
-                var info = _variableInfoCollection.FindByCpu(cpuName);
-                if (info != null)
-                {
-                    _variableWrapper.ConnectVariables(info.CpuName, info.Variables);
-                }
+                ConnectVariable(cpuName);
+            }
+        }
+
+        public void ConnectVariable(string cpuName)
+        {
+            var info = _variableInfoCollection.FindByCpu(cpuName);
+            if (info != null)
+            {
+                _variableWrapper.ConnectVariables(info.CpuName, info.Variables);
             }
         }
 

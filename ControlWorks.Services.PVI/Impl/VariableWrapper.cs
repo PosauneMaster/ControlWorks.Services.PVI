@@ -86,7 +86,12 @@ namespace ControlWorks.Services.PVI.Impl
         {
             if (_service.Cpus.ContainsKey(cpuName))
             {
-                ConnectVariable(_service.Cpus[cpuName], name);
+                var cpu = _service.Cpus[cpuName];
+                var ipAddress = cpu.Connection.TcpIp.DestinationIpAddress;
+                if (cpu.IsConnected)
+                {
+                    ConnectVariable(_service.Cpus[cpuName], name);
+                }
             }
         }
 
@@ -99,40 +104,61 @@ namespace ControlWorks.Services.PVI.Impl
                 value = String.Empty;
             }
 
-            switch (v.DataType)
+            var iceDataType = v.IECDataType;
+
+            switch (v.IECDataType)
             {
 
-                case DataType.Boolean:
-                    value = v.ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+                case IECDataTypes.BOOL:
+                    if (v.IsOfTypeArray && v.ArrayLength > 1)
+                    {
+                        value = v[0].ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+                    }
+                    else
+                    {
+                        value = v.ToBoolean(CultureInfo.CurrentCulture).ToString(CultureInfo.CurrentCulture);
+                    }
                     break;
 
-                case DataType.SByte:
-                case DataType.Int16:
-                case DataType.Int32:
-                case DataType.Int64:
-                case DataType.Byte:
-                case DataType.UInt16:
-                case DataType.UInt32:
-                case DataType.UInt64:
-                case DataType.Single:
-                case DataType.WORD:
-                case DataType.DWORD:
-                case DataType.UInt8:
-                    value = v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                case IECDataTypes.REAL:
+                    value = v.ToDouble(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
                     break;
 
-                case DataType.Double:
-                    value = v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
-                    break;
-
-                case DataType.DateTime:
-                case DataType.Date:
-                case DataType.DT:
+                case IECDataTypes.DATE:
+                case IECDataTypes.DATE_AND_TIME:
                     value = v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
                     break;
                 default:
-                    value = String.Empty;
+                    value = v.ToIECString();
                     break;
+
+                //case DataType.SByte:
+                //case DataType.Int16:
+                //case DataType.Int32:
+                //case DataType.Int64:
+                //case DataType.Byte:
+                //case DataType.UInt16:
+                //case DataType.UInt32:
+                //case DataType.UInt64:
+                //case DataType.Single:
+                //case DataType.WORD:
+                //case DataType.DWORD:
+                //case DataType.UInt8:
+                //    value = v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                //    break;
+
+                //case DataType.Double:
+                //    value = v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
+                //    break;
+
+                //case DataType.DateTime:
+                //case DataType.Date:
+                //case DataType.DT:
+                //    value = v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
+                //    break;
+                //default:
+                //    value = String.Empty;
+                //    break;
             }
 
             return value == null ? String.Empty : value;
@@ -178,7 +204,7 @@ namespace ControlWorks.Services.PVI.Impl
             {
                 CpuName = cpu.Name,
                 IpAddress = cpu.Connection.TcpIp.DestinationIpAddress,
-                DataType = Enum.GetName(typeof(DataType), variable.Value.DataType),
+                DataType = Enum.GetName(typeof(IECDataTypes), variable.Value.IECDataType),
                 VariableName = e.Name,
                 Value = ConvertVariableValue(variable.Value)
             };

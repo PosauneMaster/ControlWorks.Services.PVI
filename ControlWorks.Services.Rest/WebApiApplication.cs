@@ -50,6 +50,8 @@ namespace ControlWorks.Services.Rest
 
             Log.Info($"Starting WebApi at host {hostUrl}");
 
+
+
             WebApp.Start<WebApiApplication>(hostUrl);
         }
     }

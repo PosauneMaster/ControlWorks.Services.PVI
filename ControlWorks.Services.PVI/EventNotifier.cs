@@ -1,9 +1,7 @@
-﻿using BR.AN.PviServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+
+using BR.AN.PviServices;
+
 using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
@@ -15,7 +13,7 @@ namespace ControlWorks.Services.PVI
         event EventHandler<PviApplicationEventArgs> PviServiceConnected;
         event EventHandler<PviApplicationEventArgs> PviServiceDisconnected;
         event EventHandler<PviApplicationEventArgs> PviServiceError;
-        event EventHandler<PviApplicationEventArgs> CpuConnected;
+        event EventHandler<CpuConnectionArgs> CpuConnected;
         event EventHandler<PviApplicationEventArgs> CpuDisconnected;
         event EventHandler<PviApplicationEventArgs> CpuError;
         event EventHandler<PviApplicationEventArgs> VariableConnected;
@@ -30,7 +28,7 @@ namespace ControlWorks.Services.PVI
         void OnPviServiceConnected(object sender, PviApplicationEventArgs e);
         void OnPviServiceDisconnected(object sender, PviApplicationEventArgs e);
         void OnPviServiceError(object sender, PviApplicationEventArgs e);
-        void OnCpuConnected(object sender, PviApplicationEventArgs e);
+        void OnCpuConnected(object sender, CpuConnectionArgs e);
         void OnCpuDisconnected(object sender, PviApplicationEventArgs e);
         void OnCpuError(object sender, PviApplicationEventArgs e);
         void OnVariableConnected(object sender, PviApplicationEventArgs e);
@@ -46,7 +44,7 @@ namespace ControlWorks.Services.PVI
         public event EventHandler<PviApplicationEventArgs> PviServiceConnected;
         public event EventHandler<PviApplicationEventArgs> PviServiceDisconnected;
         public event EventHandler<PviApplicationEventArgs> PviServiceError;
-        public event EventHandler<PviApplicationEventArgs> CpuConnected;
+        public event EventHandler<CpuConnectionArgs> CpuConnected;
         public event EventHandler<PviApplicationEventArgs> CpuDisconnected;
         public event EventHandler<PviApplicationEventArgs> CpuError;
         public event EventHandler<PviApplicationEventArgs> VariableConnected;
@@ -73,7 +71,7 @@ namespace ControlWorks.Services.PVI
             var temp = PviServiceError;
             temp?.Invoke(sender, e);
         }
-        public void OnCpuConnected(object sender, PviApplicationEventArgs e)
+        public void OnCpuConnected(object sender, CpuConnectionArgs e)
         {
             var temp = CpuConnected;
             temp?.Invoke(sender, e);
@@ -134,5 +132,24 @@ namespace ControlWorks.Services.PVI
         public IVariableWrapper VariableWrapper { get; set; }
         public IServiceWrapper ServiceWrapper { get; set; }
         public string Message { get; set; }
+    }
+
+    public class CpuConnectionArgs : EventArgs
+    {
+        public Cpu Cpu { get; set; }
+        public string Message { get; set; }
+        public CpuConnectionArgs() : this(null, null)
+        {
+
+        }
+        public CpuConnectionArgs(Cpu cpu): this(cpu, null)
+        {
+
+        }
+        public CpuConnectionArgs(Cpu cpu, string message)
+        {
+            Cpu = cpu;
+            Message = message;
+        }
     }
 }

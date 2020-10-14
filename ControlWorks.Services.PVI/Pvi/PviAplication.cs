@@ -1,8 +1,10 @@
-﻿using ControlWorks.Services.PVI.Impl;
+﻿using ControlWorks.Common;
+using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Windows.Forms;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -182,7 +184,10 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_VariableValueChanged(object sender, PviApplicationEventArgs e)
         {
-            _log.Info(e.Message);
+            if (ConfigurationProvider.VerboseVariableLogging)
+            {
+                _log.Info(e.Message);
+            }
         }
 
         private void _eventNotifier_VariableError(object sender, PviApplicationEventArgs e)
@@ -198,15 +203,20 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_CpuError(object sender, PviApplicationEventArgs e)
         {
+            _log.Info(e.Message);
         }
 
         private void _eventNotifier_CpuDisconnected(object sender, PviApplicationEventArgs e)
         {
         }
 
-        private void _eventNotifier_CpuConnected(object sender, PviApplicationEventArgs e)
+        private void _eventNotifier_CpuConnected(object sender, CpuConnectionArgs e)
         {
-            _log.Info($"PviApplication, CpuConnected={e.Message}");
+            if (e.Cpu != null && e.Cpu.IsConnected && !e.Cpu.HasError)
+            {
+                _log.Info(e.Message);
+                _variableManager.ConnectVariable(e.Cpu.Name);
+            }
         }
 
     }

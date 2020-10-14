@@ -27,9 +27,43 @@ namespace ControlWorks.Common
         public static string SettingsDirectory { get; internal set; }
         public static ILog Logger { get; internal set; }
         public static string LogFilename { get; internal set; }
-
         public static string ServiceDescription => "ControlWorks wrapper service for REST API";
         public static string ServiceDisplayName => "ControlWorksRESTApi";
         public static string ServiceName => "ControlWorks.Services.Rest";
+
+        private static bool? _verboseVariableLogging = null;
+        public static bool VerboseVariableLogging
+        {
+            get
+            {
+                if (_verboseVariableLogging.HasValue)
+                {
+                    return _verboseVariableLogging.Value;
+                }
+
+                if (Boolean.TryParse(ConfigurationManager.AppSettings["VerboseVariableLogging"], out var verboseVariables))
+                {
+                    return verboseVariables;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public static int PollingMilliseconds
+        {
+            get 
+            {
+                const int defaultPollingTime = 60000;
+                if (Int32.TryParse(ConfigurationManager.AppSettings["VerboseVariableLogging"], out var pollingTime))
+                {
+                    return pollingTime;
+                }
+
+                return defaultPollingTime;
+            }
+        }
     }
 }
