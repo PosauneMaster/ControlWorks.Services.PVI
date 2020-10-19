@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Services", "Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Common", "ControlWorks.Common\ControlWorks.Common.csproj", "{9720EB0F-048C-4444-ACE4-110CDCC89CC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlWorks.Application.Configuration", "ControlWorks.Application.Configuration\ControlWorks.Application.Configuration.csproj", "{4D58ABAA-8156-46CB-B7AA-252E1F80A70D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{9720EB0F-048C-4444-ACE4-110CDCC89CC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9720EB0F-048C-4444-ACE4-110CDCC89CC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9720EB0F-048C-4444-ACE4-110CDCC89CC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D58ABAA-8156-46CB-B7AA-252E1F80A70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D58ABAA-8156-46CB-B7AA-252E1F80A70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D58ABAA-8156-46CB-B7AA-252E1F80A70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D58ABAA-8156-46CB-B7AA-252E1F80A70D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

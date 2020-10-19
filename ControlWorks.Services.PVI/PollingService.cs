@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using BR.AN.PviServices;
+
 using ControlWorks.Common;
+using ControlWorks.Services.PVI.Impl;
 using log4net;
+
 using Exception = System.Exception;
 
 namespace ControlWorks.Services.PVI
@@ -14,20 +15,21 @@ namespace ControlWorks.Services.PVI
     public class PollingService
     {
         private Service _service;
-        private CancellationToken _cancellationToken;
+        ICpuWrapper _cpuWrapper;
         private CancellationTokenSource _cts;
         private System.Threading.Tasks.Task _pollingTask;
         private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
 
-        public PollingService(Service service)
+        public PollingService(Service service, ICpuWrapper cpuWrapper)
         {
             _service = service;
+            _cpuWrapper = cpuWrapper;
             _cts = new CancellationTokenSource();
         }
 
         public void Start()
         {
-            _pollingTask = new System.Threading.Tasks.Task(Poll, _cancellationToken, TaskCreationOptions.LongRunning);
+            _pollingTask = new System.Threading.Tasks.Task(Poll, _cts.Token, TaskCreationOptions.LongRunning);
             _pollingTask.Start();
         }
 
@@ -40,8 +42,8 @@ namespace ControlWorks.Services.PVI
         private void Poll()
         {
             CancellationToken token = _cts.Token;
-            TimeSpan ts = TimeSpan.FromMilliseconds(ConfigurationProvider.PollingMilliseconds);
-            while (!token.WaitHandle.WaitOne(ts))
+            TimeSpan interval = TimeSpan.Zero;
+            while (!token.WaitHandle.WaitOne(interval))
             {
                 try
                 {
@@ -50,12 +52,14 @@ namespace ControlWorks.Services.PVI
                         break;
                     }
 
-                    _log.Info("Polling....");
+                    _log.Info($"Polling at {DateTime.Now:HHmmss}....");
                 }
                 catch (Exception ex)
                 {
-
+                    _log.Error($"PollingService.Poll", ex);
                 }
+
+                interval = TimeSpan.FromMilliseconds(ConfigurationProvider.PollingMilliseconds);
             }
         }
     }

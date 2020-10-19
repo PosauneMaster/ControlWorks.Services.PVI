@@ -13,6 +13,7 @@ namespace ControlWorks.Services.PVI
         bool Exists(string filename);
         string Read(string filepath);
         void Write(string filepath, string contents);
+        string CreateBackup(string path);
     }
 
     public class FileWrapper : IFileWrapper
@@ -63,6 +64,18 @@ namespace ControlWorks.Services.PVI
 
             _waitHandle.Set();
 
+        }
+
+        public string CreateBackup(string path)
+        {
+            var fi = new FileInfo(path);
+            if (fi.Exists)
+            {
+                var backupPath = $"{fi.FullName}.{DateTime.Now:yyyyMMddHHmmss}.bak";
+                fi.CopyTo(backupPath);
+                return backupPath;
+            }
+            return string.Empty;
         }
     }
 }

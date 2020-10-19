@@ -57,7 +57,7 @@ namespace ControlWorks.Common
             get 
             {
                 const int defaultPollingTime = 60000;
-                if (Int32.TryParse(ConfigurationManager.AppSettings["VerboseVariableLogging"], out var pollingTime))
+                if (Int32.TryParse(ConfigurationManager.AppSettings["PollingMilliseconds"], out var pollingTime))
                 {
                     return pollingTime;
                 }

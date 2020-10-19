@@ -106,6 +106,13 @@ namespace ControlWorks.Services.PVI.Panel
                 }
                 var fi = new FileInfo(path);
 
+                if (fi.Exists)
+                {
+                    var backupPath = $"{fi.FullName}.{DateTime.Now:yyyyMMddHHmmss}.bak";
+
+                    fi.CopyTo(backupPath);
+                }
+
                 if (!String.IsNullOrEmpty(fi.DirectoryName) && !Directory.Exists(fi.DirectoryName))
                 {
                     Directory.CreateDirectory(fi.DirectoryName);

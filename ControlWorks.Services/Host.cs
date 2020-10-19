@@ -16,7 +16,7 @@ namespace ControlWorks.Services
 
     public class Host : IHost
     {
-        private PviAplication _application;
+        //private PviAplication _application;
         public void Start()
         {
 
@@ -31,7 +31,7 @@ namespace ControlWorks.Services
 
         public void Stop()
         {
-            _application.Disconnect();
+            WebApiApplication.PviApp.Disconnect();
         }
 
     }

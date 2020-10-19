@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ControlWorks.Common;
 using ControlWorks.Services.PVI;
 using ControlWorks.Services.PVI.Pvi;
 using ControlWorks.Services.PVI.Variables;
@@ -28,7 +29,6 @@ namespace ControlWorks.Services.Rest.Processors
     public class VariableProcessor : IVariableProcessor
     {
         private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
-
         private IPviApplication _application;
 
         public VariableProcessor() { }
@@ -38,6 +38,15 @@ namespace ControlWorks.Services.Rest.Processors
             _application = application;
         }
 
+        public async Task UpdateVariables(string cpuName, string[] variableNames)
+        {
+            var fw = new FileWrapper();
+            var variableCollection = new VariableInfoCollection(fw);
+            await Task.Run(() => 
+            {
+                variableCollection.UpdateCpuVariables(cpuName, variableNames);
+            });
+        }
 
         public Task Add(string cpuName, IEnumerable<string> variables)
         {

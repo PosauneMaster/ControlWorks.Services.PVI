@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ControlWorks.Services.PVI.Variables;
 using ControlWorks.Services.Rest.Processors;
 using log4net;
 
@@ -26,7 +27,7 @@ namespace ControlWorks.Services.Rest.Controllers
 
                 if (settings == null)
                 {
-                    var message = "Variables not found";
+                    var message = $"Variables for Cpu {id} not found";
                     return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
                 }
                 return Ok(settings);
@@ -63,6 +64,27 @@ namespace ControlWorks.Services.Rest.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IHttpActionResult> Update([FromBody]VariableInfo variableInfo)
+        {
+            try
+            {
+                if (variableInfo == null)
+                {
+                    var message = "Variable Info is null";
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                }
+                var variableProcessor = new VariableProcessor(WebApiApplication.PviApp);
+                await variableProcessor.UpdateVariables(variableInfo.CpuName, variableInfo.Variables);
 
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                ex.Data.Add("VariableController.Operation", "Update");
+                _log.Error(ex.Message, ex);
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
+            }
+        }
     }
 }

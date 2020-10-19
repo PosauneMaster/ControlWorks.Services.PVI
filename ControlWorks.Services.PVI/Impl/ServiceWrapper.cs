@@ -8,6 +8,7 @@ namespace ControlWorks.Services.PVI.Impl
     public interface IServiceWrapper
     {
         void ConnectPviService();
+        void DisconnectPviService();
         bool IsConnected { get; }
         bool HasError { get; }
         ServiceDetail ServiceDetails();
@@ -39,6 +40,12 @@ namespace ControlWorks.Services.PVI.Impl
 
             _service.Connect();
         }
+
+        public void DisconnectPviService()
+        {
+            _service.Disconnect();
+        }
+
 
         public ServiceDetail ServiceDetails()
         {
@@ -95,7 +102,7 @@ namespace ControlWorks.Services.PVI.Impl
                 VariableWrapper = variableWrapper
             });
 
-            _pollingService = new PollingService(_service);
+            _pollingService = new PollingService(_service, cpuWrapper);
             _pollingService.Start();
         }
     }

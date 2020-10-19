@@ -28,6 +28,11 @@ namespace ControlWorks.Services.PVI.Impl
 
         public VariableResponse ReadVariables(VariableInfo info)
         {
+            if (info == null)
+            {
+                return null;
+            };
+
             var response = new VariableResponse(info.CpuName);
 
             if (_service.Cpus.ContainsKey(info.CpuName))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ControlWorks.Common;
 using Newtonsoft.Json;
 
 namespace ControlWorks.Services.PVI.Variables
@@ -64,6 +65,14 @@ namespace ControlWorks.Services.PVI.Variables
             }
 
             return _variableLookup.Values.ToList();
+        }
+
+        public void UpdateCpuVariables(string cpuName, IEnumerable<string> variableNames)
+        {
+            Open(ConfigurationProvider.VariableSettingsFile);
+            RemoveCpuRange(new[] { cpuName });
+            AddRange(cpuName, variableNames);
+            Save(ConfigurationProvider.VariableSettingsFile);
         }
 
         public void AddCpuRange(string[] cpuList)
@@ -202,6 +211,9 @@ namespace ControlWorks.Services.PVI.Variables
             {
                 path = $"{filepath}.config";
             }
+
+            _fileWrapper.CreateBackup(path);
+
             var fi = new FileInfo(path);
             string json = JsonConvert.SerializeObject(new List<VariableInfo>(_variableLookup.Values));
 

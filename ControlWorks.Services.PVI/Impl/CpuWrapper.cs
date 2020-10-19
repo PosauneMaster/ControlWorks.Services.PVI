@@ -56,6 +56,7 @@ namespace ControlWorks.Services.PVI.Impl
 
         public void CreateCpu(CpuInfo cpuInfo)
         {
+
             Cpu cpu = null;
             if (_service.Cpus.ContainsKey(cpuInfo.Name))
             {
@@ -108,7 +109,7 @@ namespace ControlWorks.Services.PVI.Impl
                 if (_service.Cpus.ContainsKey(cpu.Name))
                 {
                     ipAddress = cpu.Connection.TcpIp.DestinationIpAddress;
-                    _service.Cpus.Remove(cpu.Name);
+                    cpu.Dispose();
                 }
             }
 

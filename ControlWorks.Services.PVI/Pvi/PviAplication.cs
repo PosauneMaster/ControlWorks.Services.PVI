@@ -91,6 +91,7 @@ namespace ControlWorks.Services.PVI.Pvi
 
         public void Disconnect()
         {
+            _serviceWrapper.DisconnectPviService();
             _pviContext.Dispose();
         }
 
