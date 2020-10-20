@@ -30,6 +30,7 @@ namespace ControlWorks.Services.PVI.Pvi
         VariableResponse ReadVariables(string cpuName, IList<string> variableNames);
         VariableResponse ReadAllVariables(string cpuName);
         VariableResponse ReadActiveVariables(string cpuName);
+        List<VariableDetails> GetVariableDetails(string cpuName);
 
     }
     public class PviAplication : IPviApplication
@@ -138,6 +139,11 @@ namespace ControlWorks.Services.PVI.Pvi
         public VariableResponse ReadAllVariables(string cpuName)
         {
             return _variableManager.GetAllVariables(cpuName);
+        }
+
+        public List<VariableDetails> GetVariableDetails(string cpuName)
+        {
+            return _variableManager.GetVariableDetails(cpuName);
         }
 
         public VariableResponse ReadActiveVariables(string cpuName)

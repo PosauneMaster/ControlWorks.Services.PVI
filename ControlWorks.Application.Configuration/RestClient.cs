@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -128,6 +129,28 @@ namespace ControlWorks.Application.Configuration
             }
 
             return false;
+        }
+
+        public async Task<List<VariableInfo>> GetVariableDetails(string id)
+        {
+            var url = $"http://localhost:9002/api/Variables/GetDetails/{id}";
+
+            try
+            {
+                var response = await Client.GetAsync(url);
+
+                var result = response.Content.ReadAsStringAsync().Result;
+                var jsonResult = JsonConvert.DeserializeObject<List<VariableInfo>>(result);
+
+                return jsonResult;
+
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return null;
         }
     }
 }

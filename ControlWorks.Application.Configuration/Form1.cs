@@ -29,11 +29,14 @@ namespace ControlWorks.Application.Configuration
             lblStatus.BackColor = Color.DarkRed;
             lblStatus.ForeColor = Color.White;
             lblStatus.Text = "Disconnected";
+
+            dgVariables.AutoGenerateColumns = false;
+            dgCpuPanels.AutoGenerateColumns = false;
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            var heartbeat = Task.Run( async () => await _restClient.GetHeartbeat()).Result;
+            var heartbeat = Task.Run(async () => await _restClient.GetHeartbeat()).Result;
             if (heartbeat.HasValue)
             {
                 lblHeartbeatTime.Text = heartbeat.Value.ToString("MM/dd/yyyy HH:mm:ss");
@@ -75,6 +78,8 @@ namespace ControlWorks.Application.Configuration
 
                 cbCpuPanels.DataSource = _cpuClientInfo;
                 cbCpuPanels.DisplayMember = "Name";
+
+                dgCpuPanels.DataSource = _cpuClientInfo;
             }
         }
 
@@ -89,30 +94,43 @@ namespace ControlWorks.Application.Configuration
                     var selected = cb.SelectedItem as CpuClientInfo;
                     if (selected != null)
                     {
-                        txtCpuName.Text = selected.Name;
-                        txtCpuDescription.Text = selected.Description;
-                        txtCpuIpAddress.Text = selected.IpAddress;
-                        txtCpuHasError.Text = selected.HasError;
-                        txtCpuIsConnected.Text = selected.IsConnected;
-                        if (selected.Error != null)
-                        {
-                            txtErrorCode.Text = selected.Error.ErrorCode;
-                            txtErrorDescription.Text = selected.Error.ErrorText;
-                        }
+                        //txtCpuName.Text = selected.Name;
+                        //txtCpuDescription.Text = selected.Description;
+                        //txtCpuIpAddress.Text = selected.IpAddress;
+                        //txtCpuHasError.Text = selected.HasError;
+                        //txtCpuIsConnected.Text = selected.IsConnected;
+                        //if (selected.Error != null)
+                        //{
+                        //    txtErrorCode.Text = selected.Error.ErrorCode;
+                        //    txtErrorDescription.Text = selected.Error.ErrorText;
+                        //}
+
                     }
+                    GetVariableDetails(selected.Name);
+
                 }
+            }
+        }
+
+        private void GetVariableDetails(string cpuName)
+        {
+            dgVariables.DataSource = null;
+            var details = Task.Run(async () => await _restClient.GetVariableDetails(cpuName)).Result;
+            if (details != null)
+            {
+                dgVariables.DataSource = details;
             }
         }
 
         private void ClearCpuInfo()
         {
-            txtCpuName.Clear();
-            txtCpuDescription.Clear();
-            txtCpuIpAddress.Clear();
-            txtCpuHasError.Clear();
-            txtCpuIsConnected.Clear();
-            txtErrorCode.Clear();
-            txtErrorDescription.Clear();
+            //txtCpuName.Clear();
+            //txtCpuDescription.Clear();
+            //txtCpuIpAddress.Clear();
+            //txtCpuHasError.Clear();
+            //txtCpuIsConnected.Clear();
+            //txtErrorCode.Clear();
+            //txtErrorDescription.Clear();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -130,7 +148,12 @@ namespace ControlWorks.Application.Configuration
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var info = Task.Run(async () => await _restClient.DeleteCpu(txtCpuName.Text)).Result;
+            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+
+            if (selected != null)
+            {
+                var info = Task.Run(async () => await _restClient.DeleteCpu(selected.Name)).Result;
+            }
 
             ClearCpuInfo();
             GetCpuInfo();

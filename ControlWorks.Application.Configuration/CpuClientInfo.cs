@@ -14,6 +14,34 @@ namespace ControlWorks.Application.Configuration
         public string IsConnected { get; set; }
         public string HasError { get; set; }
         public CpuClentErrorInfo Error { get; set; }
+
+        public string ErrorCode
+        {
+            get
+            { 
+                if (Error != null)
+                {
+                    return Error.ErrorCode;
+                }
+
+                return String.Empty;
+            }
+        }
+
+        public string ErrorText
+        {
+            get
+            {
+                if (Error != null)
+                {
+                    return Error.ErrorText;
+                }
+
+                return String.Empty;
+            }
+        }
+
+
     }
 
     public class CpuClentErrorInfo

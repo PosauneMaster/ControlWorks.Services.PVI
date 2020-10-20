@@ -22,7 +22,7 @@ namespace ControlWorks.Services.Rest.Processors
         Task AddMaster(string[] variables);
         Task AddCpuRange(string[] cpus);
         Task RemoveCpuRange(string[] cpus);
-
+        Task<List<VariableDetails>> GetVariableDetails(string cpuName);
     }
 
 
@@ -46,6 +46,12 @@ namespace ControlWorks.Services.Rest.Processors
             {
                 variableCollection.UpdateCpuVariables(cpuName, variableNames);
             });
+        }
+
+        public Task<List<VariableDetails>> GetVariableDetails(string cpuName)
+        {
+            var result = Task.Run(() => _application.GetVariableDetails(cpuName));
+            return result;
         }
 
         public Task Add(string cpuName, IEnumerable<string> variables)

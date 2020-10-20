@@ -86,8 +86,17 @@ namespace ControlWorks.Services.PVI.Panel
         {
             var responseList = new List<CpuDetailResponse>();
 
-            GetCpuNames().
-                ForEach(c => { responseList.Add(FindCpuByName(c)); });
+            var collection = new CpuInfoCollection();
+            collection.Open(ConfigurationProvider.CpuSettingsFile);
+
+            var cpuNames = GetCpuNames();
+
+            foreach(var name in cpuNames)
+            {
+                var cpu = collection.FindByName(name);
+                var cpuDetail = _cpuWrapper.GetCpuByName(cpu);
+                responseList.Add(cpuDetail);
+            }
 
             return responseList.ToArray();
         }

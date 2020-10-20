@@ -13,6 +13,8 @@ namespace ControlWorks.Services.PVI.Impl
         VariableResponse ReadVariables(VariableInfo info);
         VariableResponse ReadActiveVariables(VariableInfo info);
         void DisconnectVariables(string cpuName, IEnumerable<string> variableNames);
+        List<VariableDetails> GetVariableDetails(VariableInfo info);
+
     }
 
     public class VariableWrapper : IVariableWrapper
@@ -24,6 +26,43 @@ namespace ControlWorks.Services.PVI.Impl
         {
             _service = service;
             _eventNotifier = eventNotifier;
+        }
+
+        public List<VariableDetails> GetVariableDetails(VariableInfo info)
+        {
+            if (info == null)
+            {
+                return null;
+            };
+
+            var list = new List<VariableDetails>();
+
+            if (_service.Cpus.ContainsKey(info.CpuName))
+            {
+                var cpu = _service.Cpus[info.CpuName];
+
+                foreach (var variable in info.Variables)
+                {
+                    if (cpu.Variables.ContainsKey(variable))
+                    {
+                        var value = ConvertVariableValue(cpu.Variables[variable].Value);
+
+                        var details = new VariableDetails();
+                        details.Name = cpu.Variables[variable].Name;
+                        details.CpuName = info.CpuName;
+                        details.Value = value;
+                        details.IsConnected = cpu.Variables[variable].IsConnected;
+                        details.HasError = cpu.Variables[variable].HasError;
+                        details.ErrorCode = cpu.Variables[variable].ErrorCode.ToString();
+                        details.ErrorText = cpu.Variables[variable].ErrorText;
+
+                        list.Add(details);
+                    }
+                }
+            }
+
+            return list;
+
         }
 
         public VariableResponse ReadVariables(VariableInfo info)
