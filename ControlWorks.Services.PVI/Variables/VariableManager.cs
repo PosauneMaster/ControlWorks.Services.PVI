@@ -77,13 +77,13 @@ namespace ControlWorks.Services.PVI.Variables
 
         public void AddVariables(string cpuName, IList<string> variableNames)
         {
-            _variableInfoCollection.AddRange(cpuName, variableNames);
+            _variableInfoCollection.UpdateCpuVariables(cpuName, variableNames);
             _variableWrapper.ConnectVariables(cpuName, variableNames);
         }
 
         public void RemoveVariables(string cpuName, IList<string> variableNames)
         {
-            _variableInfoCollection.RemoveRange(cpuName, variableNames);
+            _variableInfoCollection.RemoveVariableRange(cpuName, variableNames);
             _variableWrapper.DisconnectVariables(cpuName, variableNames);
         }
 

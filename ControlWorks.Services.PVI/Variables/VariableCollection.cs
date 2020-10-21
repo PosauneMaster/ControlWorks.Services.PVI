@@ -14,13 +14,20 @@ namespace ControlWorks.Services.PVI.Variables
         void RemoveCpuRange(string[] cpuList);
         VariableInfo FindByCpu(string name);
         void AddRange(string cpuName, IEnumerable<string> variableNames);
-        void RemoveRange(string cpuName, IEnumerable<string> variableNames);
+        void RemoveVariableRange(string cpuName, IEnumerable<string> variableNames);
         void Add(string cpuName, string variableName);
         void Remove(string cpuName, string variableName);
         void Open(string filepath);
         void Save(string filepath);
+        void UpdateCpuVariables(string cpuName, IEnumerable<string> variableNames);
+
     }
 
+    public class VariableDetail
+    {
+        public string CpuName { get; set; }
+        public string VariableName { get; set; }
+    }
 
     public class VariableInfo
     {
@@ -114,12 +121,17 @@ namespace ControlWorks.Services.PVI.Variables
             }
         }
 
-        public void RemoveRange(string cpuName, IEnumerable<string> variableNames)
+        public void RemoveVariableRange(string cpuName, IEnumerable<string> variableNames)
         {
+            Open(ConfigurationProvider.VariableSettingsFile);
+
             foreach (var name in variableNames)
             {
                 Remove(cpuName, name);
             }
+
+            Save(ConfigurationProvider.VariableSettingsFile);
+
         }
 
         public void Add(string cpuName, string variableName)

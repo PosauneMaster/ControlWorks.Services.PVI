@@ -23,9 +23,10 @@ namespace ControlWorks.Services.Rest
         public void Configuration(IAppBuilder app)
         {
             var config = new HttpConfiguration();
-            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
             config.MapHttpAttributeRoutes();
+
+            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
             // Configure Web API for self-host. 
             config.Routes.MapHttpRoute(

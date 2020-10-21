@@ -49,6 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmAddVariable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddVariable.Designer.cs">
+      <DependentUpon>frmAddVariable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDeleteVariable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDeleteVariable.Designer.cs">
+      <DependentUpon>frmDeleteVariable.cs</DependentUpon>
+    </Compile>
     <Compile Include="RestClient.cs" />
     <Compile Include="CpuClientInfo.cs" />
     <Compile Include="CpuInfoUpdate.cs" />
@@ -67,11 +79,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VariableInfo.cs" />
+    <Compile Include="VariableUpdateInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddCpuPanelcs.resx">
       <DependentUpon>frmAddCpuPanelcs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddVariable.resx">
+      <DependentUpon>frmAddVariable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDeleteVariable.resx">
+      <DependentUpon>frmDeleteVariable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

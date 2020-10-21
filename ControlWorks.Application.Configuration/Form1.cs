@@ -9,6 +9,7 @@ namespace ControlWorks.Application.Configuration
 {
     public partial class Form1 : Form
     {
+
         private RestClient _restClient;
         private bool _isConnected = false;
         private List<CpuClientInfo> _cpuClientInfo;
@@ -85,52 +86,27 @@ namespace ControlWorks.Application.Configuration
 
         private void cbCpuPanels_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ClearCpuInfo();
             if (_cpuClientInfo != null)
             {
                 var cb = sender as ComboBox;
                 if (cb != null)
                 {
-                    var selected = cb.SelectedItem as CpuClientInfo;
-                    if (selected != null)
-                    {
-                        //txtCpuName.Text = selected.Name;
-                        //txtCpuDescription.Text = selected.Description;
-                        //txtCpuIpAddress.Text = selected.IpAddress;
-                        //txtCpuHasError.Text = selected.HasError;
-                        //txtCpuIsConnected.Text = selected.IsConnected;
-                        //if (selected.Error != null)
-                        //{
-                        //    txtErrorCode.Text = selected.Error.ErrorCode;
-                        //    txtErrorDescription.Text = selected.Error.ErrorText;
-                        //}
-
-                    }
-                    GetVariableDetails(selected.Name);
-
+                    RefreshVariables();
                 }
             }
         }
 
-        private void GetVariableDetails(string cpuName)
+        private List<VariableInfo> GetVariableDetails(string cpuName)
         {
             dgVariables.DataSource = null;
             var details = Task.Run(async () => await _restClient.GetVariableDetails(cpuName)).Result;
             if (details != null)
             {
                 dgVariables.DataSource = details;
+                return details;
             }
-        }
 
-        private void ClearCpuInfo()
-        {
-            //txtCpuName.Clear();
-            //txtCpuDescription.Clear();
-            //txtCpuIpAddress.Clear();
-            //txtCpuHasError.Clear();
-            //txtCpuIsConnected.Clear();
-            //txtErrorCode.Clear();
-            //txtErrorDescription.Clear();
+            return null;
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -142,7 +118,6 @@ namespace ControlWorks.Application.Configuration
 
         private void AddForm_CpuAdded(object sender, EventArgs e)
         {
-            ClearCpuInfo();
             GetCpuInfo();
         }
 
@@ -155,8 +130,51 @@ namespace ControlWorks.Application.Configuration
                 var info = Task.Run(async () => await _restClient.DeleteCpu(selected.Name)).Result;
             }
 
-            ClearCpuInfo();
             GetCpuInfo();
+        }
+
+        private void btnAddVariable_Click(object sender, EventArgs e)
+        {
+            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+            if (selected != null)
+            {
+                var addForm = new frmAddVariable(_restClient, selected.Name);
+                addForm.VariableAdded += AddForm_VariableAdded;
+                addForm.ShowDialog(this);
+            }
+        }
+
+        private void AddForm_VariableAdded(object sender, EventArgs e)
+        {
+            RefreshVariables();
+        }
+
+        private void btnDeleteVariable_Click(object sender, EventArgs e)
+        {
+            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+            if (selected != null)
+            {
+                var variableNames = GetVariableDetails(selected.Name).Select(v => v.Name).ToList();
+                var deleteForm = new frmDeleteVariable(_restClient, selected.Name, variableNames);
+                deleteForm.VariableDeleted += DeleteForm_VariableDeleted;
+
+                deleteForm.ShowDialog(this);
+            }
+        }
+
+        private void DeleteForm_VariableDeleted(object sender, EventArgs e)
+        {
+            RefreshVariables();
+        }
+
+        private void RefreshVariables()
+        {
+            System.Threading.Thread.Sleep(500);
+            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+            if (selected != null)
+            {
+                GetVariableDetails(selected.Name);
+            }
         }
     }
 }

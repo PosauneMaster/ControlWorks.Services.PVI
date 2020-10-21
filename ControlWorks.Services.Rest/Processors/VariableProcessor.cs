@@ -16,8 +16,8 @@ namespace ControlWorks.Services.Rest.Processors
         Task<List<VariableDetailRespose>> GetAll();
         Task<VariableResponse> FindByCpuName(string name);
         Task<VariableResponse> FindActiveByCpuName(string name);
-        Task Add(string cpuName, IEnumerable<string> variables);
-        Task Remove(string cpuName, IEnumerable<string> variables);
+        Task Add(string cpuName, string variableName);
+        Task RemoveVariables(string cpuName, IEnumerable<string> variables);
         Task<VariableDetailRespose> Copy(string source, string destination);
         Task AddMaster(string[] variables);
         Task AddCpuRange(string[] cpus);
@@ -46,17 +46,21 @@ namespace ControlWorks.Services.Rest.Processors
             {
                 variableCollection.UpdateCpuVariables(cpuName, variableNames);
             });
+
         }
 
-        public Task<List<VariableDetails>> GetVariableDetails(string cpuName)
+        public async Task<List<VariableDetails>> GetVariableDetails(string cpuName)
         {
-            var result = Task.Run(() => _application.GetVariableDetails(cpuName));
+            var result = await Task.Run(() => _application.GetVariableDetails(cpuName));
             return result;
         }
 
-        public Task Add(string cpuName, IEnumerable<string> variables)
+        public async Task Add(string cpuName, string variableName)
         {
-            throw new NotImplementedException();
+            var details = await GetVariableDetails(cpuName);
+            var list = details.Select(v => v.Name).ToList();
+            list.Add(variableName);
+            _application.AddVariables(cpuName, list);
         }
 
         public Task AddCpuRange(string[] cpus)
@@ -90,9 +94,9 @@ namespace ControlWorks.Services.Rest.Processors
             throw new NotImplementedException();
         }
 
-        public Task Remove(string cpuName, IEnumerable<string> variables)
+        public Task RemoveVariables(string cpuName, IEnumerable<string> variables)
         {
-            throw new NotImplementedException();
+            return Task.Run(() => _application.RemoveVariables(cpuName, variables.ToList()));
         }
 
         public Task RemoveCpuRange(string[] cpus)

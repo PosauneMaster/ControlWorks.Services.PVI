@@ -89,7 +89,9 @@ namespace ControlWorks.Services.Rest.Controllers
             }
         }
 
+
         [HttpPost]
+        [Route("api/Variables/Update")]
         public async Task<IHttpActionResult> Update([FromBody]VariableInfo variableInfo)
         {
             try
@@ -111,5 +113,56 @@ namespace ControlWorks.Services.Rest.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
             }
         }
+
+
+        [HttpPost]
+        [Route("api/Variables/Add")]
+        public async Task<IHttpActionResult> Add([FromBody]VariableDetail variableDetail)
+        {
+            try
+            {
+                if (variableDetail == null)
+                {
+                    var message = "Variable Info is null";
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                }
+                var variableProcessor = new VariableProcessor(WebApiApplication.PviApp);
+                await variableProcessor.Add(variableDetail.CpuName, variableDetail.VariableName);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                ex.Data.Add("VariableController.Operation", "Update");
+                _log.Error(ex.Message, ex);
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
+            }
+        }
+
+        [HttpPost]
+        [Route("api/Variables/Delete")]
+        public async Task<IHttpActionResult> Delete([FromBody]VariableDetail variableDetail)
+        {
+            try
+            {
+                if (variableDetail == null)
+                {
+                    var message = "Variable Name is null";
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+                }
+                var variableProcessor = new VariableProcessor(WebApiApplication.PviApp);
+                await variableProcessor.RemoveVariables(variableDetail.CpuName, new List<string>(new[] { variableDetail.VariableName }));
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                ex.Data.Add("VariableController.Operation", "Update");
+                _log.Error(ex.Message, ex);
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
+            }
+        }
+
+
     }
 }

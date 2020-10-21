@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -152,5 +153,58 @@ namespace ControlWorks.Application.Configuration
 
             return null;
         }
+
+        public async Task<bool> AddVariable(string cpu, string variableName)
+        {
+            var url = $"http://localhost:9002/api/Variables/Add/";
+
+            try
+            {
+                var info = new VariableUpdateInfo() { CpuName = cpu, VariableName = variableName };
+
+                var json = JsonConvert.SerializeObject(info);
+                var postData = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await Client.PostAsync(url, postData);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+
+        }
+
+        public async Task<bool> DeleteVariable(string cpu, string variableName)
+        {
+            var url = $"http://localhost:9002/api/Variables/Delete/";
+
+            try
+            {
+                var info = new VariableUpdateInfo() { CpuName = cpu, VariableName = variableName };
+
+                var json = JsonConvert.SerializeObject(info);
+                var postData = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await Client.PostAsync(url, postData);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return false;
+
+        }
+
+
+
+
+
     }
 }

@@ -59,6 +59,8 @@
             this.colCpuPanelHasError = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCpuPanelErrorCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCpuPanelErrorDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnAddVariable = new System.Windows.Forms.Button();
+            this.btnDeleteVariable = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgVariables)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgCpuPanels)).BeginInit();
@@ -158,21 +160,21 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(567, 465);
+            this.btnUpdate.Location = new System.Drawing.Point(513, 445);
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.Size = new System.Drawing.Size(106, 23);
             this.btnUpdate.TabIndex = 24;
-            this.btnUpdate.Text = "Add";
+            this.btnUpdate.Text = "Add Cpu Panel";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(654, 465);
+            this.button2.Location = new System.Drawing.Point(625, 445);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(106, 23);
             this.button2.TabIndex = 25;
-            this.button2.Text = "Delete";
+            this.button2.Text = "Delete Cpu Panel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -195,9 +197,10 @@
             this.colValue});
             this.dgVariables.Location = new System.Drawing.Point(759, 81);
             this.dgVariables.Name = "dgVariables";
+            this.dgVariables.ReadOnly = true;
             this.dgVariables.RowHeadersVisible = false;
             this.dgVariables.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgVariables.Size = new System.Drawing.Size(700, 607);
+            this.dgVariables.Size = new System.Drawing.Size(700, 592);
             this.dgVariables.TabIndex = 26;
             // 
             // colName
@@ -206,6 +209,7 @@
             this.colName.DataPropertyName = "Name";
             this.colName.HeaderText = "Name";
             this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
             this.colName.Width = 60;
             // 
             // colCpuName
@@ -214,6 +218,7 @@
             this.colCpuName.DataPropertyName = "CpuName";
             this.colCpuName.HeaderText = "Cpu Name";
             this.colCpuName.Name = "colCpuName";
+            this.colCpuName.ReadOnly = true;
             this.colCpuName.Width = 82;
             // 
             // colIsConnected
@@ -222,6 +227,7 @@
             this.colIsConnected.DataPropertyName = "IsConnected";
             this.colIsConnected.HeaderText = "Is Connected";
             this.colIsConnected.Name = "colIsConnected";
+            this.colIsConnected.ReadOnly = true;
             this.colIsConnected.Width = 95;
             // 
             // colHasError
@@ -230,6 +236,7 @@
             this.colHasError.DataPropertyName = "HasError";
             this.colHasError.HeaderText = "Has Error";
             this.colHasError.Name = "colHasError";
+            this.colHasError.ReadOnly = true;
             this.colHasError.Width = 76;
             // 
             // colErrorCode
@@ -238,6 +245,7 @@
             this.colErrorCode.DataPropertyName = "ErrorCode";
             this.colErrorCode.HeaderText = "Error Code";
             this.colErrorCode.Name = "colErrorCode";
+            this.colErrorCode.ReadOnly = true;
             this.colErrorCode.Width = 82;
             // 
             // colErrorText
@@ -246,6 +254,7 @@
             this.colErrorText.DataPropertyName = "ErrorText";
             this.colErrorText.HeaderText = "Error Text";
             this.colErrorText.Name = "colErrorText";
+            this.colErrorText.ReadOnly = true;
             this.colErrorText.Width = 78;
             // 
             // colValue
@@ -254,6 +263,7 @@
             this.colValue.DataPropertyName = "Value";
             this.colValue.HeaderText = "Value";
             this.colValue.Name = "colValue";
+            this.colValue.ReadOnly = true;
             // 
             // dgCpuPanels
             // 
@@ -271,6 +281,7 @@
             this.colCpuPanelErrorDescription});
             this.dgCpuPanels.Location = new System.Drawing.Point(14, 81);
             this.dgCpuPanels.Name = "dgCpuPanels";
+            this.dgCpuPanels.ReadOnly = true;
             this.dgCpuPanels.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgCpuPanels.Size = new System.Drawing.Size(717, 358);
             this.dgCpuPanels.TabIndex = 27;
@@ -281,6 +292,7 @@
             this.colCpuPanelName.DataPropertyName = "Name";
             this.colCpuPanelName.HeaderText = "Name";
             this.colCpuPanelName.Name = "colCpuPanelName";
+            this.colCpuPanelName.ReadOnly = true;
             this.colCpuPanelName.Width = 60;
             // 
             // colCpuPanelDescription
@@ -289,6 +301,7 @@
             this.colCpuPanelDescription.DataPropertyName = "Description";
             this.colCpuPanelDescription.HeaderText = "Description";
             this.colCpuPanelDescription.Name = "colCpuPanelDescription";
+            this.colCpuPanelDescription.ReadOnly = true;
             this.colCpuPanelDescription.Width = 85;
             // 
             // colCpuPanelIp
@@ -297,6 +310,7 @@
             this.colCpuPanelIp.DataPropertyName = "IpAddress";
             this.colCpuPanelIp.HeaderText = "IP Address";
             this.colCpuPanelIp.Name = "colCpuPanelIp";
+            this.colCpuPanelIp.ReadOnly = true;
             this.colCpuPanelIp.Width = 83;
             // 
             // colCpuPanelIsConnected
@@ -305,6 +319,7 @@
             this.colCpuPanelIsConnected.DataPropertyName = "IsConnected";
             this.colCpuPanelIsConnected.HeaderText = "Is Connected";
             this.colCpuPanelIsConnected.Name = "colCpuPanelIsConnected";
+            this.colCpuPanelIsConnected.ReadOnly = true;
             this.colCpuPanelIsConnected.Width = 95;
             // 
             // colCpuPanelHasError
@@ -313,6 +328,7 @@
             this.colCpuPanelHasError.DataPropertyName = "HasError";
             this.colCpuPanelHasError.HeaderText = "Has Error";
             this.colCpuPanelHasError.Name = "colCpuPanelHasError";
+            this.colCpuPanelHasError.ReadOnly = true;
             this.colCpuPanelHasError.Width = 76;
             // 
             // colCpuPanelErrorCode
@@ -321,6 +337,7 @@
             this.colCpuPanelErrorCode.DataPropertyName = "ErrorCode";
             this.colCpuPanelErrorCode.HeaderText = "Error Code";
             this.colCpuPanelErrorCode.Name = "colCpuPanelErrorCode";
+            this.colCpuPanelErrorCode.ReadOnly = true;
             this.colCpuPanelErrorCode.Width = 82;
             // 
             // colCpuPanelErrorDescription
@@ -329,12 +346,35 @@
             this.colCpuPanelErrorDescription.DataPropertyName = "ErrorText";
             this.colCpuPanelErrorDescription.HeaderText = "Error Description";
             this.colCpuPanelErrorDescription.Name = "colCpuPanelErrorDescription";
+            this.colCpuPanelErrorDescription.ReadOnly = true;
+            // 
+            // btnAddVariable
+            // 
+            this.btnAddVariable.Location = new System.Drawing.Point(1241, 679);
+            this.btnAddVariable.Name = "btnAddVariable";
+            this.btnAddVariable.Size = new System.Drawing.Size(106, 23);
+            this.btnAddVariable.TabIndex = 28;
+            this.btnAddVariable.Text = "Add Variable";
+            this.btnAddVariable.UseVisualStyleBackColor = true;
+            this.btnAddVariable.Click += new System.EventHandler(this.btnAddVariable_Click);
+            // 
+            // btnDeleteVariable
+            // 
+            this.btnDeleteVariable.Location = new System.Drawing.Point(1353, 679);
+            this.btnDeleteVariable.Name = "btnDeleteVariable";
+            this.btnDeleteVariable.Size = new System.Drawing.Size(106, 23);
+            this.btnDeleteVariable.TabIndex = 29;
+            this.btnDeleteVariable.Text = "DeleteVariable";
+            this.btnDeleteVariable.UseVisualStyleBackColor = true;
+            this.btnDeleteVariable.Click += new System.EventHandler(this.btnDeleteVariable_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1482, 741);
+            this.Controls.Add(this.btnDeleteVariable);
+            this.Controls.Add(this.btnAddVariable);
             this.Controls.Add(this.dgCpuPanels);
             this.Controls.Add(this.dgVariables);
             this.Controls.Add(this.button2);
@@ -391,6 +431,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colCpuPanelHasError;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCpuPanelErrorCode;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCpuPanelErrorDescription;
+        private System.Windows.Forms.Button btnAddVariable;
+        private System.Windows.Forms.Button btnDeleteVariable;
     }
 }
 
