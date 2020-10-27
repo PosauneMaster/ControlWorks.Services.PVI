@@ -55,5 +55,9 @@ namespace ControlWorks.Application.Configuration
             temp?.Invoke(this, new EventArgs());
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

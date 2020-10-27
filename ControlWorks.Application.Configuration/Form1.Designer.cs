@@ -61,6 +61,10 @@
             this.colCpuPanelErrorDescription = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnAddVariable = new System.Windows.Forms.Button();
             this.btnDeleteVariable = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnRefreshCpu = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgVariables)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgCpuPanels)).BeginInit();
@@ -72,7 +76,7 @@
             this.lblConnectedUrl,
             this.lblHeartbeatTime,
             this.lblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 719);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 768);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1482, 22);
             this.statusStrip1.TabIndex = 0;
@@ -160,7 +164,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(513, 445);
+            this.btnUpdate.Location = new System.Drawing.Point(403, 633);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(106, 23);
             this.btnUpdate.TabIndex = 24;
@@ -170,7 +174,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(625, 445);
+            this.button2.Location = new System.Drawing.Point(515, 633);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(106, 23);
             this.button2.TabIndex = 25;
@@ -195,12 +199,13 @@
             this.colErrorCode,
             this.colErrorText,
             this.colValue});
-            this.dgVariables.Location = new System.Drawing.Point(759, 81);
+            this.dgVariables.Location = new System.Drawing.Point(759, 103);
+            this.dgVariables.MultiSelect = false;
             this.dgVariables.Name = "dgVariables";
             this.dgVariables.ReadOnly = true;
             this.dgVariables.RowHeadersVisible = false;
             this.dgVariables.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgVariables.Size = new System.Drawing.Size(700, 592);
+            this.dgVariables.Size = new System.Drawing.Size(710, 513);
             this.dgVariables.TabIndex = 26;
             // 
             // colName
@@ -279,11 +284,12 @@
             this.colCpuPanelHasError,
             this.colCpuPanelErrorCode,
             this.colCpuPanelErrorDescription});
-            this.dgCpuPanels.Location = new System.Drawing.Point(14, 81);
+            this.dgCpuPanels.Location = new System.Drawing.Point(23, 103);
+            this.dgCpuPanels.MultiSelect = false;
             this.dgCpuPanels.Name = "dgCpuPanels";
             this.dgCpuPanels.ReadOnly = true;
             this.dgCpuPanels.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgCpuPanels.Size = new System.Drawing.Size(717, 358);
+            this.dgCpuPanels.Size = new System.Drawing.Size(710, 513);
             this.dgCpuPanels.TabIndex = 27;
             // 
             // colCpuPanelName
@@ -350,7 +356,7 @@
             // 
             // btnAddVariable
             // 
-            this.btnAddVariable.Location = new System.Drawing.Point(1241, 679);
+            this.btnAddVariable.Location = new System.Drawing.Point(1139, 633);
             this.btnAddVariable.Name = "btnAddVariable";
             this.btnAddVariable.Size = new System.Drawing.Size(106, 23);
             this.btnAddVariable.TabIndex = 28;
@@ -360,7 +366,7 @@
             // 
             // btnDeleteVariable
             // 
-            this.btnDeleteVariable.Location = new System.Drawing.Point(1353, 679);
+            this.btnDeleteVariable.Location = new System.Drawing.Point(1251, 633);
             this.btnDeleteVariable.Name = "btnDeleteVariable";
             this.btnDeleteVariable.Size = new System.Drawing.Size(106, 23);
             this.btnDeleteVariable.TabIndex = 29;
@@ -368,17 +374,61 @@
             this.btnDeleteVariable.UseVisualStyleBackColor = true;
             this.btnDeleteVariable.Click += new System.EventHandler(this.btnDeleteVariable_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(354, 82);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 18);
+            this.label4.TabIndex = 30;
+            this.label4.Text = "Panels";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(1076, 82);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(77, 18);
+            this.label5.TabIndex = 31;
+            this.label5.Text = "Variables";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(1363, 633);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(106, 23);
+            this.btnRefresh.TabIndex = 32;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnRefreshCpu
+            // 
+            this.btnRefreshCpu.Location = new System.Drawing.Point(627, 633);
+            this.btnRefreshCpu.Name = "btnRefreshCpu";
+            this.btnRefreshCpu.Size = new System.Drawing.Size(106, 23);
+            this.btnRefreshCpu.TabIndex = 33;
+            this.btnRefreshCpu.Text = "Refresh";
+            this.btnRefreshCpu.UseVisualStyleBackColor = true;
+            this.btnRefreshCpu.Click += new System.EventHandler(this.btnRefreshCpu_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1482, 741);
-            this.Controls.Add(this.btnDeleteVariable);
-            this.Controls.Add(this.btnAddVariable);
-            this.Controls.Add(this.dgCpuPanels);
-            this.Controls.Add(this.dgVariables);
+            this.ClientSize = new System.Drawing.Size(1482, 790);
+            this.Controls.Add(this.btnRefreshCpu);
+            this.Controls.Add(this.btnRefresh);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnUpdate);
+            this.Controls.Add(this.dgCpuPanels);
+            this.Controls.Add(this.btnDeleteVariable);
+            this.Controls.Add(this.btnAddVariable);
+            this.Controls.Add(this.dgVariables);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbCpuPanels);
@@ -433,6 +483,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colCpuPanelErrorDescription;
         private System.Windows.Forms.Button btnAddVariable;
         private System.Windows.Forms.Button btnDeleteVariable;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnRefreshCpu;
     }
 }
 

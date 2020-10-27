@@ -1,6 +1,7 @@
 ﻿using ControlWorks.Services.PVI.Impl;
 using System.Collections.Generic;
 using ControlWorks.Common;
+using System.Linq;
 
 namespace ControlWorks.Services.PVI.Panel
 {
@@ -15,6 +16,8 @@ namespace ControlWorks.Services.PVI.Panel
         bool Update(CpuInfo info);
         List<string> GetCpuNames();
         CpuDetailResponse[] GetCpus();
+        void Reconnect();
+
     }
 
     public class CpuManager : ICpuManager
@@ -30,10 +33,21 @@ namespace ControlWorks.Services.PVI.Panel
 
         public void LoadCpus()
         {
-            var list = GetCpuSettings().GetCpuList();
+            var list = GetCpuSettings().GetCpuList().OrderBy(c => c.Name);
             _cpuWrapper.Initialize(list);
 
         }
+
+        public void Reconnect()
+        {
+            var list = GetCpuSettings().GetCpuList();
+
+            foreach (var info in list)
+            {
+                _cpuWrapper.Reconnect(info);
+            }
+        }
+
         public void DisconnectCpuByName(string name)
         {
             var info = FindByName(name);
@@ -98,7 +112,7 @@ namespace ControlWorks.Services.PVI.Panel
                 responseList.Add(cpuDetail);
             }
 
-            return responseList.ToArray();
+            return responseList.OrderBy(c => c.Name).ToArray();
         }
 
         #endregion

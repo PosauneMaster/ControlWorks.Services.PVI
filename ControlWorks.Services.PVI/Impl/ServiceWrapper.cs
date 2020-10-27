@@ -102,7 +102,7 @@ namespace ControlWorks.Services.PVI.Impl
                 VariableWrapper = variableWrapper
             });
 
-            _pollingService = new PollingService(_service, cpuWrapper);
+            _pollingService = new PollingService(_service, cpuManager);
             _pollingService.Start();
         }
     }

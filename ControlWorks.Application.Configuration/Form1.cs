@@ -37,13 +37,13 @@ namespace ControlWorks.Application.Configuration
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            var heartbeat = Task.Run(async () => await _restClient.GetHeartbeat()).Result;
-            if (heartbeat.HasValue)
+            var heartbeat = Task.Run(() => _restClient.GetHeartbeat());
+            if (Task heartbeat.HasValue)
             {
-                lblHeartbeatTime.Text = heartbeat.Value.ToString("MM/dd/yyyy HH:mm:ss");
-                lblStatus.BackColor = Color.DarkGreen;
-                lblStatus.ForeColor = Color.White;
-                lblStatus.Text = "Connected";
+                //lblHeartbeatTime.Text = heartbeat.Value.ToString("MM/dd/yyyy HH:mm:ss");
+                //lblStatus.BackColor = Color.DarkGreen;
+                //lblStatus.ForeColor = Color.White;
+                //lblStatus.Text = "Connected";
 
                 if (!_isConnected)
                 {
@@ -53,9 +53,9 @@ namespace ControlWorks.Application.Configuration
             }
             else
             {
-                lblStatus.BackColor = Color.DarkRed;
-                lblStatus.ForeColor = Color.White;
-                lblStatus.Text = "Disconnected";
+                //lblStatus.BackColor = Color.DarkRed;
+                //lblStatus.ForeColor = Color.White;
+                //lblStatus.Text = "Disconnected";
             }
         }
 
@@ -111,9 +111,12 @@ namespace ControlWorks.Application.Configuration
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            var addForm = new frmAddCpuPanelcs(_restClient);
-            addForm.CpuAdded += AddForm_CpuAdded;
-            addForm.ShowDialog(this);
+            if (_isConnected)
+            {
+                var addForm = new frmAddCpuPanelcs(_restClient);
+                addForm.CpuAdded += AddForm_CpuAdded;
+                addForm.ShowDialog(this);
+            }
         }
 
         private void AddForm_CpuAdded(object sender, EventArgs e)
@@ -123,24 +126,36 @@ namespace ControlWorks.Application.Configuration
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
-
-            if (selected != null)
+            if (_isConnected)
             {
-                var info = Task.Run(async () => await _restClient.DeleteCpu(selected.Name)).Result;
-            }
+                var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
 
-            GetCpuInfo();
+                if (selected != null)
+                {
+                    var message = $"Confirm DELETE Panel {selected.Name}";
+                    if (MessageBox.Show(this, message, "Delete Panel", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                    {
+                        return;
+                    }
+                    
+                    var info = Task.Run(async () => await _restClient.DeleteCpu(selected.Name)).Result;
+                }
+
+                GetCpuInfo();
+            }
         }
 
         private void btnAddVariable_Click(object sender, EventArgs e)
         {
-            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
-            if (selected != null)
+            if (_isConnected)
             {
-                var addForm = new frmAddVariable(_restClient, selected.Name);
-                addForm.VariableAdded += AddForm_VariableAdded;
-                addForm.ShowDialog(this);
+                var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+                if (selected != null)
+                {
+                    var addForm = new frmAddVariable(_restClient, selected.Name);
+                    addForm.VariableAdded += AddForm_VariableAdded;
+                    addForm.ShowDialog(this);
+                }
             }
         }
 
@@ -151,14 +166,17 @@ namespace ControlWorks.Application.Configuration
 
         private void btnDeleteVariable_Click(object sender, EventArgs e)
         {
-            var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
-            if (selected != null)
+            if (_isConnected)
             {
-                var variableNames = GetVariableDetails(selected.Name).Select(v => v.Name).ToList();
-                var deleteForm = new frmDeleteVariable(_restClient, selected.Name, variableNames);
-                deleteForm.VariableDeleted += DeleteForm_VariableDeleted;
+                var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
+                if (selected != null)
+                {
+                    var variableNames = GetVariableDetails(selected.Name).Select(v => v.Name).ToList();
+                    var deleteForm = new frmDeleteVariable(_restClient, selected.Name, variableNames);
+                    deleteForm.VariableDeleted += DeleteForm_VariableDeleted;
 
-                deleteForm.ShowDialog(this);
+                    deleteForm.ShowDialog(this);
+                }
             }
         }
 
@@ -169,11 +187,26 @@ namespace ControlWorks.Application.Configuration
 
         private void RefreshVariables()
         {
-            System.Threading.Thread.Sleep(500);
             var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
             if (selected != null)
             {
                 GetVariableDetails(selected.Name);
+            }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            if (_isConnected)
+            {
+                RefreshVariables();
+            }
+        }
+
+        private void btnRefreshCpu_Click(object sender, EventArgs e)
+        {
+            if (_isConnected)
+            {
+                GetCpuInfo();
             }
         }
     }

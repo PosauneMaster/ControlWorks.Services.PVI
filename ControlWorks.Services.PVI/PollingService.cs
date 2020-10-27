@@ -6,6 +6,7 @@ using BR.AN.PviServices;
 
 using ControlWorks.Common;
 using ControlWorks.Services.PVI.Impl;
+using ControlWorks.Services.PVI.Panel;
 using log4net;
 
 using Exception = System.Exception;
@@ -15,15 +16,15 @@ namespace ControlWorks.Services.PVI
     public class PollingService
     {
         private Service _service;
-        ICpuWrapper _cpuWrapper;
+        ICpuManager _cpuManager;
         private CancellationTokenSource _cts;
         private System.Threading.Tasks.Task _pollingTask;
         private readonly ILog _log = LogManager.GetLogger("ControlWorksLogger");
 
-        public PollingService(Service service, ICpuWrapper cpuWrapper)
+        public PollingService(Service service, ICpuManager cpuManager)
         {
             _service = service;
-            _cpuWrapper = cpuWrapper;
+            _cpuManager = cpuManager;
             _cts = new CancellationTokenSource();
         }
 
@@ -39,8 +40,10 @@ namespace ControlWorks.Services.PVI
             _pollingTask.Wait();
         }
 
-        private void Poll()
+        private async void Poll()
         {
+            await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(30));
+
             CancellationToken token = _cts.Token;
             TimeSpan interval = TimeSpan.Zero;
             while (!token.WaitHandle.WaitOne(interval))
@@ -52,7 +55,7 @@ namespace ControlWorks.Services.PVI
                         break;
                     }
 
-                    _log.Info($"Polling at {DateTime.Now:HHmmss}....");
+                    await System.Threading.Tasks.Task.Run(() => _cpuManager.Reconnect());
                 }
                 catch (Exception ex)
                 {

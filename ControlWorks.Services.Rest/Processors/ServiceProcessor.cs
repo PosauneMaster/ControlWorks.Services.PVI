@@ -28,24 +28,6 @@ namespace ControlWorks.Services.Rest
             _pviApplication = pviApplication;
         }
 
-        //private void Notifier_ResponseReceived(object sender, ResponseMessageEventArgs e)
-        //{
-        //    _responseMessage = e.ResponseMessage;
-        //    if (!_responseMessage.IsError)
-        //    {
-        //        try
-        //        {
-        //            _serviceDetail = JsonConvert.DeserializeObject<ServiceDetail>(_responseMessage.Message);
-        //        }
-        //        catch (Exception exception)
-        //        {
-        //            Console.WriteLine(exception);
-        //        }
-        //    }
-
-        //    _autoResetEvent.Set();
-        //}
-
         public async Task<ServiceDetail> GetServiceDetails()
         {
             var details = await Task.Run(() => _pviApplication.ServiceDetails());

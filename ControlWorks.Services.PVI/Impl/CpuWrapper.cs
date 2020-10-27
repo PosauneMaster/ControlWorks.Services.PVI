@@ -16,6 +16,8 @@ namespace ControlWorks.Services.PVI.Impl
         CpuDetailResponse GetCpuByName(CpuInfo info);
         List<CpuDetailResponse> GetAllCpus(IEnumerable<CpuInfo> cpuInfo);
         List<string> GetCpuNames();
+        void Reconnect(CpuInfo cpuInfo);
+
     }
 
     public class CpuWrapper : ICpuWrapper
@@ -23,6 +25,7 @@ namespace ControlWorks.Services.PVI.Impl
         private readonly Service _service;
         private readonly IEventNotifier _eventNotifier;
         private int _initialCount;
+        private Dictionary<string, CpuInfo> _cpuInfoLookup;
 
         private AutoResetEvent _disconnectWaitHandle;
 
@@ -30,6 +33,7 @@ namespace ControlWorks.Services.PVI.Impl
         {
             _service = service;
             _eventNotifier = eventNotifier;
+            _cpuInfoLookup = new Dictionary<string, CpuInfo>();
         }
 
         public void Initialize(IEnumerable<CpuInfo> cpuList)
@@ -40,6 +44,20 @@ namespace ControlWorks.Services.PVI.Impl
             foreach (var cpuInfo in list)
             {
                 CreateCpu(cpuInfo);
+            }
+        }
+
+        public void Reconnect(CpuInfo cpuInfo)
+        {
+            Cpu cpu = null;
+
+            if (_service.Cpus.ContainsKey(cpuInfo.Name))
+            {
+                cpu = _service.Cpus[cpuInfo.Name];
+                if (!cpu.IsConnected || cpu.HasError)
+                {
+                    CreateCpu(cpuInfo);
+                }
             }
         }
 
@@ -54,30 +72,37 @@ namespace ControlWorks.Services.PVI.Impl
             return list;
         }
 
-        public void CreateCpu(CpuInfo cpuInfo)
+        private void Connect(CpuInfo cpuInfo)
         {
-
-            Cpu cpu = null;
-            if (_service.Cpus.ContainsKey(cpuInfo.Name))
-            {
-
-                cpu = _service.Cpus[cpuInfo.Name];
-                DisconnectCpu(cpuInfo);
-            }
-            else
-            {
-                cpu = new Cpu(_service, cpuInfo.Name);
-            }
-
+            var cpu = new Cpu(_service, cpuInfo.Name);
             cpu.Connection.DeviceType = DeviceType.TcpIp;
             cpu.Connection.TcpIp.SourceStation = ConfigurationProvider.SourceStationId;
             cpu.Connection.TcpIp.DestinationIpAddress = cpuInfo.IpAddress;
 
-            cpu.Connected += Cpu_Connected; ;
-            cpu.Error += Cpu_Error; ;
-            cpu.Disconnected += Cpu_Disconnected; ;
+            cpu.Connected += Cpu_Connected;
+            cpu.Error += Cpu_Error;
+            cpu.Disconnected += Cpu_Disconnected;
 
             cpu.Connect();
+        }
+
+        public void CreateCpu(CpuInfo cpuInfo)
+        {
+            if (!_cpuInfoLookup.ContainsKey(cpuInfo.Name))
+            {
+                _cpuInfoLookup.Add(cpuInfo.Name, cpuInfo);
+            }
+
+            Cpu cpu = null;
+            if (_service.Cpus.ContainsKey(cpuInfo.Name))
+            {
+                DisconnectCpu(cpuInfo);
+            }
+            else
+            {
+                Connect(cpuInfo);
+            }
+
         }
         public void DisconnectCpu(CpuInfo info)
         {
@@ -94,9 +119,40 @@ namespace ControlWorks.Services.PVI.Impl
                         _disconnectWaitHandle.WaitOne(1000);
                     }
                 }
+                cpu.Removed += Cpu_Removed;
+                cpu.Remove();
 
-                _service.Cpus.Remove(cpu);
+            }
+        }
 
+        private void Cpu_Removed(object sender, PviEventArgs e)
+        {
+            string name = String.Empty;
+
+            try
+            {
+                var cpu = sender as Cpu;
+                if (cpu != null)
+                {
+                    name = cpu.Name;
+
+                    cpu.Removed -= Cpu_Removed;
+                    cpu.Connected -= Cpu_Connected;
+                    cpu.Error -= Cpu_Error;
+                    cpu.Disconnected -= Cpu_Disconnected;
+
+                    _service.Cpus.Remove(cpu);
+                    cpu.Dispose();
+                    if (_cpuInfoLookup.ContainsKey(name))
+                    {
+                        Connect(_cpuInfoLookup[name]);
+                    }
+                }
+            }
+            catch(System.Exception ex)
+            {
+                var cpuName = String.IsNullOrEmpty(name) ? String.Empty : name;
+                throw new System.Exception($"Cpu_Wrapper.Cpu_Removed. Error removing cpu {name}", ex);
             }
         }
 

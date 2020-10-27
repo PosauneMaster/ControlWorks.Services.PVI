@@ -176,33 +176,6 @@ namespace ControlWorks.Services.PVI.Impl
                     value = v.ToIECString();
                     break;
 
-                //case DataType.SByte:
-                //case DataType.Int16:
-                //case DataType.Int32:
-                //case DataType.Int64:
-                //case DataType.Byte:
-                //case DataType.UInt16:
-                //case DataType.UInt32:
-                //case DataType.UInt64:
-                //case DataType.Single:
-                //case DataType.WORD:
-                //case DataType.DWORD:
-                //case DataType.UInt8:
-                //    value = v.ToInt64(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
-                //    break;
-
-                //case DataType.Double:
-                //    value = v.ToDecimal(CultureInfo.CurrentCulture).ToString("G", CultureInfo.CurrentCulture);
-                //    break;
-
-                //case DataType.DateTime:
-                //case DataType.Date:
-                //case DataType.DT:
-                //    value = v.ToDateTime(CultureInfo.CurrentCulture).ToString("o", CultureInfo.CurrentCulture);
-                //    break;
-                //default:
-                //    value = String.Empty;
-                //    break;
             }
 
             return value == null ? String.Empty : value;
