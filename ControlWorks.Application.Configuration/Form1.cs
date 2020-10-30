@@ -13,6 +13,7 @@ namespace ControlWorks.Application.Configuration
         private RestClient _restClient;
         private bool _isConnected = false;
         private List<CpuClientInfo> _cpuClientInfo;
+        private List<VariableInfo> _variableInfoList;
 
         private string FormatUrl()
         {
@@ -38,30 +39,15 @@ namespace ControlWorks.Application.Configuration
         private void Timer1_Tick(object sender, EventArgs e)
         {
             var heartbeat = Task.Run(() => _restClient.GetHeartbeat());
-            if (Task heartbeat.HasValue)
-            {
-                //lblHeartbeatTime.Text = heartbeat.Value.ToString("MM/dd/yyyy HH:mm:ss");
-                //lblStatus.BackColor = Color.DarkGreen;
-                //lblStatus.ForeColor = Color.White;
-                //lblStatus.Text = "Connected";
-
-                if (!_isConnected)
-                {
-                    GetCpuInfo();
-                    _isConnected = true;
-                }
-            }
-            else
-            {
-                //lblStatus.BackColor = Color.DarkRed;
-                //lblStatus.ForeColor = Color.White;
-                //lblStatus.Text = "Disconnected";
-            }
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
             _restClient = new RestClient(FormatUrl());
+            _restClient.Heartbeat += _restClient_Heartbeat;
+            _restClient.CpuInfoUpdated += _restClient_CpuInfoUpdated;
+            _restClient.VariableInfoUpdated += _restClient_VariableInfoUpdated;
+
 
             lblConnectedUrl.Text = FormatUrl();
             timer1.Interval = 1000;
@@ -69,19 +55,87 @@ namespace ControlWorks.Application.Configuration
             timer1.Start();
         }
 
+        private void _restClient_VariableInfoUpdated(object sender, VariableInfoEventArgs e)
+        {
+            UpdateVariableInfo(e.VariableInfoList);
+        }
+        private void UpdateVariableInfo(List<VariableInfo> variableInfoList)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => UpdateVariableInfo(variableInfoList)));
+            }
+            else
+            {
+                _variableInfoList = variableInfoList;
+                dgVariables.DataSource = _variableInfoList;
+            }
+        }
+
+
+        private void _restClient_CpuInfoUpdated(object sender, CpuInfoEventArgs e)
+        {
+            UpdateCpuInfo(e.CpuClientInfo);
+        }
+
+        private void UpdateCpuInfo(CpuClientInfo[] info)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => UpdateCpuInfo(info)));
+            }
+            else
+            {
+                if (info != null)
+                {
+                    _cpuClientInfo = info.ToList();
+
+                    cbCpuPanels.DataSource = _cpuClientInfo;
+                    cbCpuPanels.DisplayMember = "Name";
+
+                    dgCpuPanels.DataSource = _cpuClientInfo;
+                }
+            }
+        }
+
+        private void _restClient_Heartbeat(object sender, HeartbeatEventArgs e)
+        {
+            ProcessHeartbeat(e.HeartbeatTime);
+        }
+
+        private void ProcessHeartbeat(DateTime? dt)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => ProcessHeartbeat(dt)));
+            }
+            else
+            {
+                if (dt.HasValue)
+            {
+                    lblHeartbeatTime.Text = dt.Value.ToString("MM/dd/yyyy HH:mm:ss");
+                    lblStatus.BackColor = Color.DarkGreen;
+                    lblStatus.ForeColor = Color.White;
+                    lblStatus.Text = "Connected";
+
+                    if (!_isConnected)
+                    {
+                        GetCpuInfo();
+                        _isConnected = true;
+                    }
+                }
+            else
+                {
+                    lblStatus.BackColor = Color.DarkRed;
+                    lblStatus.ForeColor = Color.White;
+                    lblStatus.Text = "Disconnected";
+                }
+            }
+        }
+
         private void GetCpuInfo()
         {
-            var info = Task.Run(async () => await _restClient.GetCpuClientInfo()).Result;
-
-            if (info != null)
-            {
-                _cpuClientInfo = info.ToList();
-
-                cbCpuPanels.DataSource = _cpuClientInfo;
-                cbCpuPanels.DisplayMember = "Name";
-
-                dgCpuPanels.DataSource = _cpuClientInfo;
-            }
+            Task.Run(async () => await _restClient.GetCpuClientInfo());
         }
 
         private void cbCpuPanels_SelectedIndexChanged(object sender, EventArgs e)
@@ -94,19 +148,6 @@ namespace ControlWorks.Application.Configuration
                     RefreshVariables();
                 }
             }
-        }
-
-        private List<VariableInfo> GetVariableDetails(string cpuName)
-        {
-            dgVariables.DataSource = null;
-            var details = Task.Run(async () => await _restClient.GetVariableDetails(cpuName)).Result;
-            if (details != null)
-            {
-                dgVariables.DataSource = details;
-                return details;
-            }
-
-            return null;
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -171,7 +212,7 @@ namespace ControlWorks.Application.Configuration
                 var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
                 if (selected != null)
                 {
-                    var variableNames = GetVariableDetails(selected.Name).Select(v => v.Name).ToList();
+                    var variableNames = _variableInfoList.Select(v => v.Name).ToList();
                     var deleteForm = new frmDeleteVariable(_restClient, selected.Name, variableNames);
                     deleteForm.VariableDeleted += DeleteForm_VariableDeleted;
 
@@ -190,9 +231,10 @@ namespace ControlWorks.Application.Configuration
             var selected = cbCpuPanels.SelectedItem as CpuClientInfo;
             if (selected != null)
             {
-                GetVariableDetails(selected.Name);
+                Task.Run(async () => await _restClient.GetVariableDetails(selected.Name));
             }
         }
+
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {

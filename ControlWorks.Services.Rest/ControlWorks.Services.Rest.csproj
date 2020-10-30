@@ -62,9 +62,6 @@
     <Compile Include="WebApiApplication.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="log4net">
       <Version>2.0.11</Version>
     </PackageReference>

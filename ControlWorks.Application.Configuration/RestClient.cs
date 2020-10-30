@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -10,6 +11,10 @@ namespace ControlWorks.Application.Configuration
 {
     public class RestClient
     {
+        public event EventHandler<HeartbeatEventArgs> Heartbeat;
+        public event EventHandler<CpuInfoEventArgs> CpuInfoUpdated;
+        public event EventHandler<VariableInfoEventArgs> VariableInfoUpdated;
+
         public string _baseUri;
 
         private static readonly Lazy<HttpClient> client = new Lazy<HttpClient>(() => new HttpClient());
@@ -25,7 +30,25 @@ namespace ControlWorks.Application.Configuration
             _baseUri = baseUri;
         }
 
-    public async void Post<T>(T data)
+        private void OnHeartbeat(DateTime? dt)
+        {
+            var temp = Heartbeat;
+            temp?.Invoke(this, new HeartbeatEventArgs() { HeartbeatTime = dt});
+        }
+
+        private void OnCpuInfoUpdated(CpuClientInfo[] cpuClientInfos)
+        {
+            var temp = CpuInfoUpdated;
+            temp?.Invoke(this, new CpuInfoEventArgs() { CpuClientInfo = cpuClientInfos });
+        }
+
+        private void OnVariableInfoUpdated(List<VariableInfo> variableInfoList)
+        {
+            var temp = VariableInfoUpdated;
+            temp?.Invoke(this, new VariableInfoEventArgs() { VariableInfoList = variableInfoList });
+        }
+
+        public async void Post<T>(T data)
         {
 
             var url = "http://localhost:9002/api/Diagnostic/GetHeartbeat";
@@ -51,26 +74,33 @@ namespace ControlWorks.Application.Configuration
             return result;
         }
 
-        public async Task<DateTime?> GetHeartbeat()
+        public async Task GetHeartbeat()
         {
             var url = "http://localhost:9002/api/Diagnostic/GetHeartbeat";
+            DateTime? responseValue = null;
 
             try
             {
                 var response = await Client.GetAsync(url).ConfigureAwait(false);
 
-                var result = response.Content.ReadAsStringAsync().Result;
-                var jsonResult = JsonConvert.DeserializeObject<DateTime>(result);
-
-                return jsonResult;
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var jsonResult = JsonConvert.DeserializeObject<DateTime>(result);
+                    responseValue = jsonResult;
+                }
             }
             catch(Exception ex)
             {
-                return null;
+
+            }
+            finally
+            {
+                OnHeartbeat(responseValue);
             }
         }
 
-        public async Task<CpuClientInfo[]> GetCpuClientInfo()
+        public async Task GetCpuClientInfo()
         {
             var url = "http://localhost:9002/api/Cpu/GetDetails";
 
@@ -81,13 +111,13 @@ namespace ControlWorks.Application.Configuration
                 var result = response.Content.ReadAsStringAsync().Result;
                 var jsonResult = JsonConvert.DeserializeObject<CpuClientInfo[]>(result);
 
-                return jsonResult;
+                OnCpuInfoUpdated(jsonResult);
+
             }
             catch (Exception ex)
             {
-                return null;
+                OnCpuInfoUpdated(null);
             }
-
         }
 
         public async Task<bool> AddOrUpdateCpuClientInfo(CpuUpdateInfo cpuUpdateInfo)
@@ -132,18 +162,18 @@ namespace ControlWorks.Application.Configuration
             return false;
         }
 
-        public async Task<List<VariableInfo>> GetVariableDetails(string id)
+        public async Task GetVariableDetails(string id)
         {
             var url = $"http://localhost:9002/api/Variables/GetDetails/{id}";
+
+            List<VariableInfo> jsonResult = null;
 
             try
             {
                 var response = await Client.GetAsync(url);
 
                 var result = response.Content.ReadAsStringAsync().Result;
-                var jsonResult = JsonConvert.DeserializeObject<List<VariableInfo>>(result);
-
-                return jsonResult;
+                jsonResult = JsonConvert.DeserializeObject<List<VariableInfo>>(result);
 
             }
             catch (Exception)
@@ -151,7 +181,7 @@ namespace ControlWorks.Application.Configuration
 
             }
 
-            return null;
+            OnVariableInfoUpdated(jsonResult);
         }
 
         public async Task<bool> AddVariable(string cpu, string variableName)
@@ -201,10 +231,20 @@ namespace ControlWorks.Application.Configuration
             return false;
 
         }
+    }
 
+    public class HeartbeatEventArgs : EventArgs
+    {
+        public DateTime? HeartbeatTime { get; set; }
+    }
 
+    public class CpuInfoEventArgs : EventArgs
+    {
+        public CpuClientInfo[] CpuClientInfo { get; set; }
+    }
 
-
-
+    public class VariableInfoEventArgs : EventArgs
+    {
+        public List<VariableInfo> VariableInfoList { get; set; }
     }
 }
