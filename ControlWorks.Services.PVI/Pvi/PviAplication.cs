@@ -3,6 +3,8 @@ using ControlWorks.Services.PVI.Impl;
 using ControlWorks.Services.PVI.Panel;
 using ControlWorks.Services.PVI.Variables;
 using log4net;
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Windows.Forms;
@@ -170,6 +172,8 @@ namespace ControlWorks.Services.PVI.Pvi
 
         private void _eventNotifier_PviServiceDisconnected(object sender, PviApplicationEventArgs e)
         {
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+            _serviceWrapper.ReConnectPviService();
         }
 
         private void _eventNotifier_PviServiceConnected(object sender, PviApplicationEventArgs e)

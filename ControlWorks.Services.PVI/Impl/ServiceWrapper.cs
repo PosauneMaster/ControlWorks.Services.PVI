@@ -8,6 +8,7 @@ namespace ControlWorks.Services.PVI.Impl
     public interface IServiceWrapper
     {
         void ConnectPviService();
+        void ReConnectPviService();
         void DisconnectPviService();
         bool IsConnected { get; }
         bool HasError { get; }
@@ -41,6 +42,20 @@ namespace ControlWorks.Services.PVI.Impl
             _service.Connect();
         }
 
+        public void ReConnectPviService()
+        {
+            if (_service.HasError || !_service.IsConnected)
+            {
+                _service.Connected -= _service_Connected;
+                _service.Disconnected -= _service_Disconnected;
+                _service.Error -= _service_Error;
+
+                _service.Dispose();
+
+                ConnectPviService();
+            }
+        }
+
         public void DisconnectPviService()
         {
             _service.Disconnect();
@@ -70,7 +85,6 @@ namespace ControlWorks.Services.PVI.Impl
         {
             var pviEventMsg = Utils.FormatPviEventMessage("ServiceWrapper._service_Disconnected", e);
             _eventNotifier.OnPviServiceDisconnected(sender, new PviApplicationEventArgs() { Message = pviEventMsg });
-            _pollingService.Stop();
         }
 
         private void _service_Connected(object sender, PviEventArgs e)

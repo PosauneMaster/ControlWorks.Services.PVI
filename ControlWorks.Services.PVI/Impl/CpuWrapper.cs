@@ -59,6 +59,10 @@ namespace ControlWorks.Services.PVI.Impl
                     CreateCpu(cpuInfo);
                 }
             }
+            else
+            {
+                CreateCpu(cpuInfo);
+            }
         }
 
         public List<string> GetCpuNames()
