@@ -6,6 +6,8 @@ using Microsoft.Owin.Hosting;
 using Newtonsoft.Json;
 using Owin;
 
+using Swagger.Net.Application;
+
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace ControlWorks.Services.Rest
 {
@@ -40,6 +42,8 @@ namespace ControlWorks.Services.Rest
                 routeTemplate: "api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.EnableSwagger(c => c.SingleApiVersion("v1", "Control Works")).EnableSwaggerUi();
 
 
             app.UseWebApi(config);
