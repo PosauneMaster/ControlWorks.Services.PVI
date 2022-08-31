@@ -87,7 +87,7 @@
       <Version>3.2.7</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Owin">
-      <Version>4.1.1</Version>
+      <Version>4.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Owin.Diagnostics">
       <Version>4.1.1</Version>
